@@ -1,6 +1,13 @@
 from django.db import models
 
 
+# managers
+class ActiveManager(models.Manager):
+    # So we can use: Product.objects.active() to return only active products
+    def active(self):
+        return self.filter(active=True)
+
+
 # Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=32)
@@ -12,6 +19,9 @@ class Product(models.Model):
     active = models.BooleanField(default=True)
     in_stock = models.BooleanField(default=True)
     data_updated = models.DateTimeField(auto_now=True)
+
+    # custom manager
+    objects = ActiveManager()
 
 
 class ProductImage(models.Model):
