@@ -136,3 +136,27 @@ STATIC_URL = '/static/'
 # Media Files Configuration
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
+# Use SMTP backend to send emails during production
+# Use Console backend to send emails during development
+# if not DEBUG:
+#     # SMTP configuration
+#     # Django logs on behalf of this email to send emails
+#     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#     EMAIL_HOST = 'smtp.gmail.com'
+#     EMAIL_USE_TLS = True
+#     EMAIL_PORT = 587
+#     EMAIL_HOST_USER = os.environ.get('PRIMARY_EMAIL_USER')
+#     EMAIL_HOST_PASSWORD = os.environ.get('PRIMARY_EMAIL_APP_PASSWORD')
+# else:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Using mailhog for email sending
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '127.0.0.1'
+EMAIL_PORT = 1025
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
