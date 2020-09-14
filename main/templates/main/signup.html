@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+	
+<div class="row mx-0">
+        <div class="col-md-8 col-lg-5 mx-auto px-0">
+            <h2>Signup</h2>				
+            <form action='' method="post" novalidate class="my-5">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{field.id_for_label}}">{{field.label|title}}</label>
+                        {{ field }}
+                        {% for err in field.errors %}
+                            <small class="invalid-feedback d-block">{{ err|linebreaks }}</small>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="py-3">
+                    <input type="submit" value="register" class="btn btn-dark btn-sm">
+                </div>
+                
+                <small class="text-muted">Already have an account? 
+                    <a class="d-inline pl-2" href="{% url 'signin' %}">Login</a>
+                </small>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

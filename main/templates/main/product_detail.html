@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h2>Product</h2>
+    
+    <h4>{{product.name}}</h4>
+    <h6>Br. {{product.price}}</h6>
+    <a href="#"><i class="fas fa-shopping-cart fa-2x"></i></a>
+    <div>
+        {% for img in product.images %}
+            <img src="{{img.image.url}}" width="150" height="150" class="border p-3">
+        {% endfor %}
+    </div>
+    <br>
+    {% for tag in product.product_tags %}
+        <small class="bg-secondary text-white p-1 rounded">{{tag}}</small>
+    {% endfor %}
+    <div>
+        <h4><a href="{{ product.category.get_absolute_url }}">{{product.category}}</a></h4>
+    </div>
+{% endblock content %}

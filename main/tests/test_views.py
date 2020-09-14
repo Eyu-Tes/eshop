@@ -1,7 +1,10 @@
+from decimal import Decimal
+
 from django.test import TestCase
 from django.urls import reverse
 
-from main import forms
+from main import forms, models
+
 
 # Create your tests here.
 
@@ -12,15 +15,51 @@ from main import forms
 ##################################################################################################
 
 class TestPage(TestCase):
-    def test_homepage_works(self):
+    def test_product_list_page_works(self):
         # response = self.client.get('/')
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse('product_list'))
         # make sure the HTTP status code for this page is 200
         self.assertEqual(response.status_code, 200)
         # make sure the template 'main/home.html' has been used
         self.assertTemplateUsed(response, 'main/home.html')
         # make sure the response contains the name of the shop: "BookTime"
         self.assertContains(response, 'BookTime')
+
+    def test_product_list_by_category_page_works(self):
+        category = models.Category.objects.create(
+            name='Cat'
+        )
+        response = self.client.get(reverse('product_list_by_category', kwargs={'category': category}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'main/home.html')
+        self.assertContains(response, 'BookTime')
+
+    def test_product_page_returns_in_stock(self):
+        category = models.Category.objects.create(
+            name='Book'
+        )
+        models.Product.objects.create(
+            name='Atomic Habits',
+            category=category,
+            price=Decimal('20.95')
+        )
+        models.Product.objects.create(
+            name="Pride and Prejudice",
+            category=category,
+            price=Decimal("2.00")
+        )
+        models.Product.objects.create(
+            name="A Tale of Two Cities",
+            category=category,
+            price=Decimal("2.00"),
+            in_stock=False
+        )
+
+        response = self.client.get(reverse('product_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "BookTime")
+        product_list = models.Product.objects.in_stock().order_by("name")
+        self.assertEqual(list(response.context["object_list"]), list(product_list),)
 
     def test_about_page_works(self):
         # NB: Don't forget to add a leading '/' before the path of the URL

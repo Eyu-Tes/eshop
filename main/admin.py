@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.html import format_html
 
-from .models import Product, ProductImage, ProductTag
+from .models import Product, ProductImage, Tag, Category
 
 
 # Register your models here.
@@ -10,9 +11,18 @@ from .models import Product, ProductImage, ProductTag
 # admin.site.register(ProductTag)
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    list_filter = ('name', )
+    search_fields = ('name',)
+
+
+admin.site.register(Category, CategoryAdmin)
+
+
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'in_stock', 'price')
-    list_filter = ('active', 'in_stock', 'date_updated')
+    list_display = ('name', 'category', 'in_stock', 'price')
+    list_filter = ('in_stock', 'date_updated')
     list_editable = ('in_stock',)
     search_fields = ('name',)
     prepopulated_fields = {"slug": ("name",)}
@@ -22,14 +32,14 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Product, ProductAdmin)
 
 
-class ProductTagAdmin(admin.ModelAdmin):
+class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     list_filter = ('active',)
     search_fields = ('name',)
     prepopulated_fields = {"slug": ("name",)}
 
 
-admin.site.register(ProductTag, ProductTagAdmin)
+admin.site.register(Tag, TagAdmin)
 
 
 class ProductImageAdmin(admin.ModelAdmin):
@@ -44,8 +54,52 @@ class ProductImageAdmin(admin.ModelAdmin):
 
     thumbnail_tag.short_description = "Thumbnail"
 
-    def product_name(self, obj):
+    @staticmethod
+    def product_name(obj):
         return obj.product.name
 
 
 admin.site.register(ProductImage, ProductImageAdmin)
+
+
+class UserAdmin(DjangoUserAdmin):
+    fieldsets = (
+        (None, {"fields": ("email", "password")}),
+        (
+            "Personal info",
+            {"fields": ("first_name", "last_name")},
+        ),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        (
+            "Important dates",
+            {"fields": ("last_login", "date_joined")},
+        ),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2"),
+            },
+        ),
+    )
+    list_display = (
+        "email",
+        "first_name",
+        "last_name",
+        "is_staff",
+    )
+    search_fields = ("email", "first_name", "last_name")
+    ordering = ("email",)

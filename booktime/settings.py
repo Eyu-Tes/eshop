@@ -138,6 +138,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
+# Alert Messages that align with the bootstrap 'alert' class
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
+
+
 # Use SMTP backend to send emails during production
 # Use Console backend to send emails during development
 # if not DEBUG:
@@ -160,3 +171,11 @@ EMAIL_PORT = 1025
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
+
+
+# Substitute the default Django User model with the custom user
+AUTH_USER_MODEL = "main.CustomUser"
+
+
+# Set login redirect url
+LOGIN_REDIRECT_URL = 'product_list'

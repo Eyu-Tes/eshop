@@ -6,8 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap FontAwsome CSS -->
     <link rel="stylesheet" href="{% static 'main/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/font awsome/css/all.min.css' %}">
 
     <title>Hello world!</title>
 </head>
@@ -18,26 +19,47 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                {% comment %}
+                    The 'request' variable comes from: django.template.context_processors.request.
+                    It is instance of: django.http.HttpRequest that represents current HTTP request.
+                {% endcomment %}
+                <li class="nav-item {% if request.path == '/' %}active{%endif%}">
+                    {# <a class="nav-link" href="/">Home</a> #}
+                    <a class="nav-link" href="{% url 'product_list' %}">Home</a>
+                </li>
+                <li class="nav-item {% if request.path == '/about/'%}active{%endif%}">
+                    {# <a class="nav-link" href="/about">About</a> #}
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>
+                <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                </li>
+            </ul>
             <ul class="navbar-nav">
-            {% comment %}
-                The 'request' variable comes from: django.template.context_processors.request.
-                It is instance of: django.http.HttpRequest that represents current HTTP request.
-            {% endcomment %}
-            <li class="nav-item {% if request.path == '/' %}active{%endif%}">
-                {# <a class="nav-link" href="/">Home</a> #}
-                <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item {% if request.path == '/about/'%}active{%endif%}">
-                {# <a class="nav-link" href="/about">About</a> #}
-                <a class="nav-link" href="{% url 'about' %}">About</a>
-            </li>
-            <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'contact' %}">Contact</a>
-            </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">{{user.username}}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signout' %}">logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signin' %}">login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">register</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
     </nav>
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
 
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
         {% block content %}
         {% endblock content %}
     </div>
