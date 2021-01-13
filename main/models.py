@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -13,7 +14,12 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('product_list_by_category', kwargs={'category': self.name})
+        # return reverse('product_list_by_category', kwargs={'category': self.name})
+        # return f'/?category={self.name}'
+        return reverse('product_list') + f'?category={self.name}'
+
+    class Meta:
+        ordering = ['name']
 
 
 class Tag(models.Model):
@@ -116,3 +122,31 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+
+class Cart(models.Model):
+    # enum
+    class Statuses(models.TextChoices):
+        OPEN = 'O', _('Open')
+        SUBMITTED = 'S', _('Submitted')
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                             blank=True, null=True)
+    status = models.CharField(max_length=2,
+                              choices=Statuses.choices,
+                              default=Statuses.OPEN)
+
+    def is_empty(self):
+        return self.cartitem_set.all().count() == 0
+
+    def count(self):
+        return sum(i.quantity for i in self.cartitem_set.all())
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1,
+                                           validators=[MinValueValidator(1)])
+
+    class Meta:
+        ordering = ['id']

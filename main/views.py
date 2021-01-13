@@ -1,12 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from django.http import Http404
 from django.views.generic import DetailView, FormView, ListView
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 
-from .forms import ContactForm, SignUpForm
-from .models import Product, Category
+from .forms import ContactForm, SignUpForm, CartItemFormSet
+from .models import Product, Category, Cart, CartItem
 
 
 # Create your views here.
@@ -28,17 +27,31 @@ class ContactUsView(FormView):
 class ProductListView(ListView):
     # use 'products' as variable name instead of the default 'object_list'
     context_object_name = 'products'
-    extra_context = {
-        'categories': Category.objects.all()
-    }
-    paginate_by = 6
+    paginate_by = 5
     template_name = 'main/home.html'
+
+    # override __init__ to add request parameter
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.category_query = None
+
+    def dispatch(self, request, *args, **kwargs):
+        # find query parameter called 'category' in url: i.e. '/?category='blabla'
+        self.category_query = self.request.GET.get('category', None)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         """ return a queryset of all in_stock products of a given category """
-        url_category = self.kwargs.get('category', None)
-        if url_category:
-            category = get_object_or_404(Category, name=url_category)
+        # url_category = self.kwargs.get('category', None)
+        # if url_category:
+        #     category = get_object_or_404(Category, name=url_category)
+        #     qs = Product.objects.in_stock().filter(category__name=category)
+        # else:
+        #     qs = Product.objects.in_stock()
+        #
+        # return qs
+        if self.category_query:
+            category = get_object_or_404(Category, name=self.category_query)
             qs = Product.objects.in_stock().filter(category__name=category)
         else:
             qs = Product.objects.in_stock()
@@ -46,11 +59,19 @@ class ProductListView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
+        # context = super().get_context_data(**kwargs)
+        # context['categories'] = Category.objects.all()
+        # url_category = self.kwargs.get('category', None)
+        # category = None
+        # if url_category:
+        #     category = get_object_or_404(Category, name=url_category)
+        # context['category'] = category
+        # return context
         context = super().get_context_data(**kwargs)
-        url_category = self.kwargs.get('category', None)
+        context['categories'] = Category.objects.all()
         category = None
-        if url_category:
-            category = get_object_or_404(Category, name=url_category)
+        if self.category_query:
+            category = get_object_or_404(Category, name=self.category_query)
         context['category'] = category
         return context
 
@@ -80,3 +101,51 @@ class SignUpView(FormView):
         # display “flash” message to user upon their browser’s next HTTP request
         messages.info(self.request, 'You signed up successfully.')
         return super().form_valid(form)
+
+
+def add_to_cart(request):
+    product = get_object_or_404(Product, pk=request.GET.get('product_id'))
+    cart = request.cart
+    if not request.cart:
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = None
+        cart = Cart.objects.create(user=user)
+        request.session['cart_id'] = cart.id
+
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart, product=product
+    )
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    return redirect('product', pk=product.id)
+
+
+def cart(request):
+    cart_obj = request.cart
+    context = {
+        'cart': cart_obj
+    }
+    return render(request, 'main/cart.html', context=context)
+
+
+# django doesn't include CBVs coupled with formsets.
+def manage_cart(request, pk):
+    cart_item = get_object_or_404(CartItem, id=pk)
+    action = request.GET.get('action', None)
+
+    if action == 'inc':
+        cart_item.quantity += 1
+        cart_item.save()
+    elif action == 'dcr':
+        cart_item.quantity -= 1
+        cart_item.save()
+        if cart_item.quantity <= 0:
+            cart_item.delete()
+    elif action == 'rmv':
+        cart_item.delete()
+
+    return redirect('cart')

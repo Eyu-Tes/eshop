@@ -1,0 +1,57 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h2>Cart</h2>
+    {% comment %} {% if formset %}
+        <p>You can adjust the quantities below.</p>
+        <form action="" method="post" novalidate>
+            {% csrf_token %}
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <p>
+                    {# Return product name inside each cart item #}
+                    {{ form.instance.product.name }} 
+                    <span class="mx-3">|</span>
+                    {{ form }}
+                </p>
+            {% endfor %}
+            <button type="submit" class='btn btn-secondary'>Update Cart</button>
+        </form>
+    {% else %}
+        <p>You have no items in the cart.</p>
+    {% endif %} {% endcomment %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart.cartitem_set.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{item.product}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>
+                        {# action will be sent as a parameter #}
+                        <a href="{% url 'manage_cart' item.id %}?action=inc" class="btn btn-info">+</a>
+                        <a href="{% url 'manage_cart' item.id %}?action=dcr" class="btn btn-warning">-</a>
+                        <a href="{% url 'manage_cart' item.id %}?action=rmv" class="btn btn-danger">x</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="col-2">
+        <a href="{% url 'signin' %}?next={% url 'cart' %}" class="btn btn-info">Checkout</a>
+    </div>
+{% endblock content %}
+
+{% block js %}
+    {% if formset %}
+        {{ formset.media }}
+    {% endif %}
+{% endblock js %}

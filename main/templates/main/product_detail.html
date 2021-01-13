@@ -3,12 +3,14 @@
 {% block content %}
     <h2>Product</h2>
     
+    {# We can also use {{object.}} instead of {{product}} #}
     <h4>{{product.name}}</h4>
     <h6>Br. {{product.price}}</h6>
-    <a href="#"><i class="fas fa-shopping-cart fa-2x"></i></a>
+    {# passing query parameter ? #}
+    <a href="{% url 'add_to_cart' %}?product_id={{product.id}}"><i class="fas fa-shopping-cart fa-2x"></i></a>
     <div>
         {% for img in product.images %}
-            <img src="{{img.image.url}}" width="150" height="150" class="border p-3">
+            <img src="{{img.image.url}}" width="150" class="img-fluid border p-3">
         {% endfor %}
     </div>
     <br>

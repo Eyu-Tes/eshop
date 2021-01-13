@@ -4,16 +4,12 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <a class="{% if not category %}text-dark{% endif %}" href="{% url 'product_list' %}">All</a>
-                    </li>
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action {% if not category %}active{% endif %}" href="{% url 'product_list' %}">All</a>
                     {% for c in categories %}
-                        <li class="list-group-item">
-                            <a class="{% if category == c %}text-dark{%endif%}" href="{{c.get_absolute_url}}">{{c}}</a>
-                        </li>
+                        <a class="list-group-item list-group-item-action {% if category == c %}active{%endif%}" href="{{c.get_absolute_url}}">{{c}}</a>
                     {% endfor %}
-                </ul>
+                </div>
             </div>
         </div>
         <div class="col-md-9">

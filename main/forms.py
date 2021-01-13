@@ -6,7 +6,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import send_mail
 
-from .models import CustomUser
+from .models import CustomUser, Cart, CartItem
+from . import widgets
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +88,17 @@ class SignInForm(forms.Form):
         return self.cleaned_data
 
     # return user
-    # Otherwise: AttributeError at /signin/ 'SignInForm' object has no attribute 'get_user'
+    # Otherwise: AttributeError at /signin/ 'SignInForm', object has no attribute 'get_user'
     def get_user(self):
         return self.user
 
+
+CartItemFormSet = forms.inlineformset_factory(
+    Cart,
+    CartItem,
+    fields=('quantity',),
+    extra=0,
+    widgets={
+        # "quantity": widgets.PlusMinusNumberInput()
+    }
+)

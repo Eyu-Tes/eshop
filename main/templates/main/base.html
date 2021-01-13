@@ -6,9 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap FontAwsome CSS -->
+    <!-- Bootstrap FontAwsome CSS, Custom CSS -->
     <link rel="stylesheet" href="{% static 'main/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'main/font awsome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/custom/style/style.css' %}">
+
+    <!-- Custom CSS -->
+    {% block css %}{% endblock css %}
 
     <title>Hello world!</title>
 </head>
@@ -52,6 +56,18 @@
                         <a class="nav-link" href="{% url 'signup' %}">register</a>
                     </li>
                 {% endif %}
+                <li class="nav-item">
+                    {# Using the cart's count method to return the total number of products in the cart #}
+                    <a href="{% url 'cart' %}" class="nav-link">
+                        <span class="badge badge-info">
+                            {% if request.cart %}
+                                {{request.cart.count}}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -68,5 +84,7 @@
     <script src="{% static 'main/jquery-3.5.1.min.js' %}"></script>
     <script src="{% static 'main/popper.min.js' %}"></script>
     <script src="{% static 'main/bootstrap-4.4.1-dist/js/bootstrap.min.js' %}"></script>
+    <!-- Custom JS -->
+    {% block js %}{% endblock js %}
 </body>
 </html>
