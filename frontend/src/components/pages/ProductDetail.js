@@ -12,10 +12,10 @@ const ProductDetail = ({match}) => {
                 Go Back
             </Link>
             <Row>
-                <Col md={6}>
+                <Col md={6} lg={6}>
                     <Image fluid src={product.image} alt={product.name} />
                 </Col>
-                <Col md={3}>
+                <Col md={6} lg={3}>
                     <ListGroup variant='flush'>
                         <ListGroup.Item>
                             <h3>{product.name}</h3>
@@ -34,7 +34,7 @@ const ProductDetail = ({match}) => {
                         </ListGroup.Item>
                     </ListGroup>
                 </Col>
-                <Col md={3}>
+                <Col md={{span: 6, offset: 6}} lg={{span: 3, offset: 0}}>
                     <Card>
                         <ListGroup variant='flush'>
                             <ListGroup.Item>
