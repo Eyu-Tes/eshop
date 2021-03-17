@@ -1,21 +1,36 @@
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { Button, Card, Col, Row, Image, ListGroup } from 'react-bootstrap'
 import Rating from '../products/Rating'
-import products from '../../products'
 
 const ProductDetail = ({match}) => {
-    const product = products.find(product => product._id === match.params.id)
-    
+    const [product, setProduct] = useState(null)
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const {data} = await axios.get(`/api/products/${match.params.id}`)
+                setProduct(data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        fetchProduct()
+    }, [])
+
     return (
+        product && (
         <>
             <Link className='btn btn-light my-3' to='/'>
                 Go Back
             </Link>
             <Row>
-                <Col md={6} lg={6}>
+                <Col md={6} lg={5}>
                     <Image fluid src={product.image} alt={product.name} />
                 </Col>
-                <Col md={6} lg={3}>
+                <Col md={6} lg={4}>
                     <ListGroup variant='flush'>
                         <ListGroup.Item>
                             <h3>{product.name}</h3>
@@ -71,6 +86,7 @@ const ProductDetail = ({match}) => {
                 </Col>
             </Row>
         </>
+        )
     )
 }
 
