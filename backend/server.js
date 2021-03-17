@@ -1,6 +1,7 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const colors = require('colors')
+const { notFound, errorHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 
 /* ===== This needs to loaded before other configurations ===== */
@@ -19,6 +20,10 @@ app.get('/', (req, res) => {
 
 // load routers
 app.use('/api/products', require('./routes/products'))
+
+// error middlewares
+app.use(notFound)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 
