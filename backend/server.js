@@ -1,5 +1,11 @@
 const express = require('express')
+const dotenv = require('dotenv')
 const products = require('./data/products')
+
+/* ===== This needs to loaded before other configurations ===== */
+// load environment varibles from a .env file into process.env
+// default path = '.env'
+dotenv.config()
 
 const app = express()
 
@@ -15,8 +21,8 @@ app.get('/api/products/:id', (req, res) => {
     res.json(products.find(product => product._id === req.params.id))
 })
 
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 
 app.listen(PORT, 
-    console.log(`Server is running on port ${PORT} ...`)
+    console.log(`Server is running in ${process.env.NODE_ENV} mode on port ${PORT} ...`)
 )
