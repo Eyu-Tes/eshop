@@ -4,10 +4,12 @@ import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import Home from './components/pages/Home'
 import ProductDetail from './components/pages/ProductDetail'
+import ProductContextProvider from './context/product/ProductContext'
 
 const App = () => {
   return (
-    <Router>
+    <ProductContextProvider>
+      <Router>
         <Header/>
         <main className='py-3'>
           <Container>
@@ -20,7 +22,8 @@ const App = () => {
           </Container>
         </main>
         <Footer/>
-    </Router>
+      </Router>
+    </ProductContextProvider>
   )
 }
 

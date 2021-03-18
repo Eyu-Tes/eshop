@@ -21,8 +21,9 @@ app.get('/', (req, res) => {
 // load routers
 app.use('/api/products', require('./routes/products'))
 
+// NB: This should be added after all the routes (otherwise it is going to get fired before the routes)
 // error middlewares
-app.use(notFound)
+app.use(notFound)               // Not Found Errors - non existing urls
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000

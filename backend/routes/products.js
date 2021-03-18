@@ -24,6 +24,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
     }
     else {
         res.status(404)
+        // This error will be caught by the custom error handler middleware
         throw new Error('Product not found')
     }
 }))

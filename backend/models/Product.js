@@ -3,10 +3,12 @@ const mongoose = require('mongoose')
 const ReviewSchema = new mongoose.Schema({
     name: {type: String, required: true},
     rating: {type: Number, required: true},
-    comment: {type: String, required: true},
+    comment: {type: String, required: true}
 }, {
     timestamps: true
 })
+
+// Note that we didn't create a model of Review
 
 const ProductSchema = new mongoose.Schema({
     user: {
@@ -34,15 +36,23 @@ const ProductSchema = new mongoose.Schema({
         type: String, 
         required: true, 
     }, 
+    // The array shows that this propery is related to many review objects
     reviews: [ 
-        ReviewSchema 
+        ReviewSchema , 
+
+        // OR
+        // {
+        //     name: {type: String, required: true},
+        //     rating: {type: Number, required: true},
+        //     comment: {type: String, required: true}
+        // }
     ],
     rating: {
         type: Number, 
         required: true, 
         default: 0
     }, 
-    mumReviews: {
+    numReviews: {
         type: Number, 
         required: true, 
         default: 0
