@@ -14,12 +14,16 @@ connectDB()
 
 const app = express()
 
+// body parser middleware (required inorder to accept json data in request body)
+app.use(express.json())
+
 app.get('/', (req, res) => {
     res.send('API is running ...')
 })
 
 // load routers
 app.use('/api/products', require('./routes/products'))
+app.use('/api/users', require('./routes/users'))
 
 // NB: This should be added after all the routes (otherwise it is going to get fired before the routes)
 // error middlewares

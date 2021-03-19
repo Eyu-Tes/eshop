@@ -1,6 +1,8 @@
 const express = require('express')
-const asyncHandler = require('express-async-handler')
-const Product = require('../models/Product')
+const { 
+    fetchProducts, 
+    fetchProduct
+} = require('../controllers/products')
 
 const router = express.Router()
 
@@ -8,25 +10,12 @@ const router = express.Router()
 // @access  Public
 // @method  GET
 // @desc    Fetch all products
-router.get('/', asyncHandler(async (req, res) => {
-    const products = await Product.find()
-    res.json(products)
-}))
+router.get('/', fetchProducts)
 
 // @route   /api/products/:id
 // @access  Public
 // @method  GET
 // @desc    Fetch a single product by id
-router.get('/:id', asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id)
-    if (product) {
-        res.json(product)
-    }
-    else {
-        res.status(404)
-        // This error will be caught by the custom error handler middleware
-        throw new Error('Product not found')
-    }
-}))
+router.get('/:id', fetchProduct)
 
 module.exports = router
