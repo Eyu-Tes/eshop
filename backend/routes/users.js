@@ -4,6 +4,7 @@ const protectRoute = require('../middleware/authMiddleware')
 
 const { 
     authUser,
+    signupUser,
     getUserProfile
 } = require('../controllers/users')
 
@@ -14,6 +15,13 @@ const router = express.Router()
 // @method  POST
 // @desc    Auth user & get token
 router.post('/signin', authUser)
+
+
+// @route   /api/users/signup
+// @access  Public
+// @method  POST
+// @desc    Register user
+router.post('/signup', signupUser)
 
 // @route   /api/users/profile
 // @access  Private
