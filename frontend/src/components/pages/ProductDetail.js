@@ -9,7 +9,7 @@ import { ProductContext } from '../../context/product/ProductContext'
 const ProductDetail = ({match, history}) => {
     const { product, error, loading, fetchProduct } = useContext(ProductContext)
 
-    const [qty, setQty] = useState(0)
+    const [qty, setQty] = useState(1)
 
     const addToCartHandler = () => {
         history.push(`/cart/${match.params.id}?qty=${qty}`)

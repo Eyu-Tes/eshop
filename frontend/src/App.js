@@ -6,22 +6,25 @@ import Home from './components/pages/Home'
 import ProductDetail from './components/pages/ProductDetail'
 import Cart from './components/pages/Cart'
 import ProductContextProvider from './context/product/ProductContext'
+import CartContextProvider from './context/cart/CartContext'
 
 const App = () => {
   return (
     <ProductContextProvider>
-      <Router>
-        <Header/>
-        <main className='py-3'>
-          <Container>
-            <Route exact path='/' component={Home} />
-            <Route path='/product/:id' component={ProductDetail} />
-            {/* Make id parameter optional by adding '?' */}
-            <Route path="/cart/:id?" component={Cart} />
-          </Container>
-        </main>
-        <Footer/>
-      </Router>
+      <CartContextProvider>
+        <Router>
+          <Header/>
+          <main className='py-3'>
+            <Container>
+              <Route exact path='/' component={Home} />
+              <Route path='/product/:id' component={ProductDetail} />
+              {/* Make id parameter optional by adding '?' */}
+              <Route path="/cart/:id?" component={Cart} />
+            </Container>
+          </main>
+          <Footer/>
+        </Router>
+      </CartContextProvider>
     </ProductContextProvider>
   )
 }
