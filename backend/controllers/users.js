@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const generateToken = require('../utils/generateToken')
 const User = require('../models/User')
 
+// auth user & generate token
 module.exports.authUser = asyncHandler(async (req, res) => {
     const {email, password} = req.body
 
@@ -20,5 +21,23 @@ module.exports.authUser = asyncHandler(async (req, res) => {
         res.status(401)
         // This error will be caught by the custom error handler middleware
         throw new Error('Invalid email or password')
+    }
+})
+
+// get user profile
+module.exports.getUserProfile = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user.id)
+
+    if (user) {
+        res.json({
+            _id: user._id, 
+            name: user.name, 
+            email: user.email, 
+            isAdmin: user.isAdmin
+        })
+    }
+    else {
+        res.status(404)
+        throw new Error('User not found')
     }
 })
