@@ -6,6 +6,7 @@ import Home from './components/pages/Home'
 import ProductDetail from './components/pages/ProductDetail'
 import Cart from './components/pages/Cart'
 import Login from './components/pages/Login'
+import Register from './components/pages/Register'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
@@ -24,6 +25,7 @@ const App = () => {
                 {/* Make id parameter optional by adding '?' */}
                 <Route path="/cart/:id?" component={Cart} />
                 <Route path='/signin' component={Login} />
+                <Route path='/signup' component={Register} />
               </Container>
             </main>
             <Footer/>

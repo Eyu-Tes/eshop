@@ -35,6 +35,7 @@ const Login = ({ history, location }) => {
                     <Form.Control
                         type='email'
                         placeholder='Enter email'
+                        autoFocus
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                     ></Form.Control>

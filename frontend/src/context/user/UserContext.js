@@ -8,16 +8,16 @@ const UserContextProvider = ({children}) => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
 
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
     // signin user
     const login = async (email, password) => {
-        setUser(null)
         setError(null)
         setLoading(true)
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
         try {
             const {data} = await axios.post('/api/users/signin', {email, password}, config)
             setUser(data)
@@ -30,8 +30,18 @@ const UserContextProvider = ({children}) => {
     }
 
     // signup user
-    const register = () => {
-
+    const register = async (name, email, password) => {
+        setError(null)
+        setLoading(true)
+        try {
+            const { data } = await axios.post('/api/users/signup', {name, email, password}, config)
+            setUser(data)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setLoading(false)
+        }
     }
 
     // signout user
