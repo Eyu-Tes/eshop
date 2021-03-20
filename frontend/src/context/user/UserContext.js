@@ -35,12 +35,15 @@ const UserContextProvider = ({children}) => {
     }
 
     // signout user
-    const logout = () => {
-
+    const logout = async () => {
+        localStorage.removeItem('user')
+        setUser(null)
     }
 
     useEffect(() => {
-        localStorage.setItem('user', JSON.stringify(user))
+        if (user) {
+            localStorage.setItem('user', JSON.stringify(user))
+        }
     }, [user])
 
     return (
