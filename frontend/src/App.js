@@ -7,6 +7,7 @@ import ProductDetail from './components/pages/ProductDetail'
 import Cart from './components/pages/Cart'
 import Login from './components/pages/Login'
 import Register from './components/pages/Register'
+import Profile from './components/pages/Profile'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
@@ -26,6 +27,7 @@ const App = () => {
                 <Route path="/cart/:id?" component={Cart} />
                 <Route path='/signin' component={Login} />
                 <Route path='/signup' component={Register} />
+                <Route path='/profile' component={Profile} />
               </Container>
             </main>
             <Footer/>
