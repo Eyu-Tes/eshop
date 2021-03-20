@@ -81,7 +81,7 @@ const ProductDetail = ({match, history}) => {
                                                 <Col>
                                                     Qty:
                                                 </Col>
-                                                <Col>
+                                                <Col xs='auto'>
                                                     <Form.Control 
                                                         as='select' 
                                                         value={qty}
