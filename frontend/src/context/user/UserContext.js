@@ -10,12 +10,14 @@ const UserContextProvider = ({children}) => {
 
     // signin user
     const login = async (email, password) => {
+        setUser(null)
+        setError(null)
+        setLoading(true)
         const config = {
             headers: {
                 'Content-Type': 'application/json'
             }
         }
-        setLoading(true)
         try {
             const {data} = await axios.post('/api/users/signin', {email, password}, config)
             setUser(data)
@@ -44,6 +46,9 @@ const UserContextProvider = ({children}) => {
     return (
         <UserContext.Provider 
             value={{
+                user, 
+                error, 
+                loading,
                 login, 
                 register, 
                 logout

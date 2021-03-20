@@ -5,6 +5,7 @@ import Footer from './components/layout/Footer'
 import Home from './components/pages/Home'
 import ProductDetail from './components/pages/ProductDetail'
 import Cart from './components/pages/Cart'
+import Login from './components/pages/Login'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
@@ -22,6 +23,7 @@ const App = () => {
                 <Route path='/product/:id' component={ProductDetail} />
                 {/* Make id parameter optional by adding '?' */}
                 <Route path="/cart/:id?" component={Cart} />
+                <Route path='/signin' component={Login} />
               </Container>
             </main>
             <Footer/>

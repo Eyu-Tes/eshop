@@ -12,7 +12,7 @@ const Cart = ({match, location, history}) => {
 
     const checkoutHandler = () => {
         // if user is not logged in proceed to login page otherwise redirect to shipping
-        history.push('/login?redirect=shipping')
+        history.push('/signin?redirect=shipping')
     }
     
     useEffect(() => {
