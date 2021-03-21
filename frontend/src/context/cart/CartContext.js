@@ -5,6 +5,8 @@ export const CartContext = createContext()
 
 const CartContextProvider = (props) => {
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) || [])
+    const [shippingInfo, setShippingInfo] = useState(JSON.parse(localStorage.getItem('shippingInfo')) || null)
+    const [paymentMethod, setPaymentMethod] = useState(JSON.parse(localStorage.getItem('paymentMethod')) || null)
 
     // add item to cart
     const addToCart = async (id, qty) => {
@@ -41,6 +43,18 @@ const CartContextProvider = (props) => {
         setCartItems(cartItems.filter(cartItem => cartItem.product !== id))
     }
 
+    // save shipping information
+    const saveShippingInfo = (data) => {
+        localStorage.setItem('shippingInfo', JSON.stringify(data))
+        setShippingInfo(data)
+    }
+
+    // save payment method
+    const savePaymentMethod = (data) => {
+        localStorage.setItem('paymentMethod', JSON.stringify(data))
+        setPaymentMethod(data)
+    }
+
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems))
     }, [cartItems])
@@ -49,8 +63,12 @@ const CartContextProvider = (props) => {
         <CartContext.Provider 
             value={{
                 cartItems,
+                shippingInfo,
+                paymentMethod,
                 addToCart, 
-                removeFromCart
+                removeFromCart, 
+                saveShippingInfo, 
+                savePaymentMethod
             }}
         >
             {props.children}
