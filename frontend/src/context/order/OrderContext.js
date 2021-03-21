@@ -36,6 +36,22 @@ const OrderContextProvider = ({ children }) => {
         }
     }
 
+    // fetch order details 
+    const fetchOrderDetails = async (id) => {
+        setOrder(null)
+        setError(null)
+        setLoading(true)
+        try {
+            const {data} = await axios.get(`/api/orders/${id}`, config)
+            setOrder(data)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setLoading(false)
+        }
+    } 
+
     return (
         <OrderContext.Provider
             value={{
@@ -43,7 +59,8 @@ const OrderContextProvider = ({ children }) => {
                 error, 
                 orderSuccess, 
                 loading,
-                createOrder
+                createOrder, 
+                fetchOrderDetails
             }}
         >
             {children}

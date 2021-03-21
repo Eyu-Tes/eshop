@@ -2,85 +2,94 @@ import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Col, Row, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../layout/Message'
-import CheckoutSteps from '../layout/CheckoutSteps'
-import { CartContext } from '../../context/cart/CartContext'
+import Loader from '../layout/Loader'
 import { OrderContext } from '../../context/order/OrderContext'
 
-const PlaceOrder = ({ history }) => {
-    const { cartItems, shippingInfo, paymentMethod } = useContext(CartContext)
-    const { order, orderSuccess, error, createOrder } = useContext(OrderContext)
+const Order = ({ match }) => {
+    const orderId = match.params.id
+
+    const { order, loading, error, fetchOrderDetails } = useContext(OrderContext)
 
     const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
 
-    // calculate prices
-    const itemsPrice = addDecimals(cartItems.reduce((acc, cur) => acc + cur.price * cur.qty, 0))
-    const shippingPrice = addDecimals(itemsPrice > 100 ? 0 : 100)
-    const taxPrice = addDecimals(.15 * itemsPrice)
-    const totalPrice = addDecimals(Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice))
-
     const placeOrderHandler = e => {
         e.preventDefault()
-        createOrder({
-            orderItems: cartItems, 
-            shippingInfo, 
-            paymentMethod, 
-            itemsPrice: Number(itemsPrice), 
-            shippingPrice: Number(shippingPrice), 
-            taxPrice: Number(taxPrice), 
-            totalPrice: Number(totalPrice)
-        })
+ 
     }
 
     useEffect(() => {
-        orderSuccess && history.push(`/order/${order._id}`)
-    }, [orderSuccess])
+        fetchOrderDetails(orderId)
+    }, [])
 
     return (
+        loading ? <Loader/> : error ? <Message type='danger'>{error}</Message> :
+        order && (
         <>
-            <CheckoutSteps step1 step2 step3 step4 />
+            <h1>Order {order._id} </h1>
             <Row>
                 <Col md={8}>
                     <ListGroup variant='flush'>
                         <ListGroup.Item>
+                            <h2>Customer Information</h2>
+                            <p>
+                                <strong>Name: </strong>
+                                {order.user.name}
+                            </p>
+                            <p>
+                                <strong>Email: </strong>
+                                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+                            </p>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
                             <h2>Shipping</h2>
                             <p>
                                 <strong>Address: </strong>
-                                {shippingInfo.address}, {' '}
-                                {shippingInfo.city}, {' '}
-                                {shippingInfo.postalCode}, {' '}
-                                {shippingInfo.country} 
+                                {order.shippingInfo.address}, {' '}
+                                {order.shippingInfo.city}, {' '}
+                                {order.shippingInfo.postalCode}, {' '}
+                                {order.shippingInfo.country} 
                             </p>
+                            <Message 
+                                type={order.isDelivered ? 'success' : 'danger'}
+                            >
+                                {order.isDelivered ? 'Delivered' : 'Not Delivered'}
+                            </Message>
                         </ListGroup.Item>
                         <ListGroup.Item>
                             <h2>Payment Method</h2>
                             <p>
                                 <strong>Method: </strong>
-                                {paymentMethod}
+                                {order.paymentMethod}
                             </p>
+                            <Message 
+                                type={order.isPaid ? 'success' : 'danger'}
+                            >
+                                {order.Paid ? `Paid on ${order.paidAt}` : 'Not Paid'}
+                            </Message>
                         </ListGroup.Item>
                         <ListGroup.Item>
                             <h2>Order Items</h2>
-                            {cartItems.legth === 0 ? (
-                                <Message>Your cart is empty</Message>
+                            {order.orderItems.legth === 0 ? (
+                                <Message>Order is empty</Message>
                             ) : (
                                 <ListGroup variant='flush'>
-                                    {cartItems.map((cartItem, index) => 
+                                    {order.orderItems.map((orderItem, index) => 
                                     <ListGroup.Item key={index}>
                                         <Row>
                                             <Col md={2}>
                                                 <Image 
-                                                    src={cartItem.image} 
-                                                    alt={cartItem.name} 
+                                                    src={orderItem.image} 
+                                                    alt={orderItem.name} 
                                                     fluid rounded
                                                 />
                                             </Col>
                                             <Col>
-                                                <Link to={`/product/${cartItem.product}`}>
-                                                    {cartItem.name}
+                                                <Link to={`/product/${orderItem.product}`}>
+                                                    {orderItem.name}
                                                 </Link>
                                             </Col>
                                             <Col md={4}>
-                                                {cartItem.qty} x ${cartItem.price} = ${cartItem.qty * cartItem.price}
+                                                {orderItem.qty} x ${orderItem.price} = ${orderItem.qty * orderItem.price}
                                             </Col>
                                         </Row>
                                     </ListGroup.Item>)}
@@ -90,7 +99,7 @@ const PlaceOrder = ({ history }) => {
                     </ListGroup>
                 </Col>
                 <Col md={4}>
-                    <Card>
+                    <Card border='0'>
                         <ListGroup variant='flush'>
                             <ListGroup.Item>
                                 <h2>Order Summary</h2>
@@ -98,46 +107,34 @@ const PlaceOrder = ({ history }) => {
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Items</Col>
-                                    <Col>${itemsPrice}</Col>
+                                    <Col>${addDecimals(order.itemsPrice)}</Col>
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Shipping</Col>
-                                    <Col>${shippingPrice}</Col>
+                                    <Col>${addDecimals(order.shippingPrice)}</Col>
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Tax</Col>
-                                    <Col>${taxPrice}</Col>
+                                    <Col>${addDecimals(order.taxPrice)}</Col>
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Total</Col>
-                                    <Col>${totalPrice}</Col>
+                                    <Col>${addDecimals(order.totalPrice)}</Col>
                                 </Row>
-                            </ListGroup.Item>
-                            { error && 
-                                <ListGroup.Item>
-                                    <Message type='danger'>{error}</Message> 
-                                </ListGroup.Item>
-                            }
-                            <ListGroup.Item>
-                                <Button 
-                                    type='button' 
-                                    className='btn-block'
-                                    disabled={cartItems.legth === 0}
-                                    onClick={placeOrderHandler}
-                                >Place Order</Button>
                             </ListGroup.Item>
                         </ListGroup>
                     </Card>
                 </Col>
             </Row>
         </>
+        )
     )
 }
 
-export default PlaceOrder
+export default Order

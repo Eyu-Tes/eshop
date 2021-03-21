@@ -11,6 +11,7 @@ import Profile from './components/pages/Profile'
 import Shipping from './components/pages/Shipping'
 import Payment from './components/pages/Payment'
 import PlaceOrder from './components/pages/PlaceOrder'
+import Order from './components/pages/Order'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
@@ -33,6 +34,7 @@ const App = () => {
                   <Route path='/shipping' component={Shipping} />
                   <Route path='/payment' component={Payment} />
                   <Route path='/placeorder' component={PlaceOrder} />
+                  <Route path='/order/:id' component={Order} />
                   <Route path='/signin' component={Login} />
                   <Route path='/signup' component={Register} />
                   <Route path='/profile' component={Profile} />
