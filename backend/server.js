@@ -22,8 +22,9 @@ app.get('/', (req, res) => {
 })
 
 // load routers
-app.use('/api/products', require('./routes/products'))
 app.use('/api/users', require('./routes/users'))
+app.use('/api/products', require('./routes/products'))
+app.use('/api/orders', require('./routes/orders'))
 
 // NB: This should be added after all the routes (otherwise it is going to get fired before the routes)
 // error middlewares
