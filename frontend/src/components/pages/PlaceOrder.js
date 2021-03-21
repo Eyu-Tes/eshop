@@ -1,12 +1,14 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Col, Row, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../layout/Message'
 import CheckoutSteps from '../layout/CheckoutSteps'
 import { CartContext } from '../../context/cart/CartContext'
+import { OrderContext } from '../../context/order/OrderContext'
 
-const PlaceOrder = () => {
+const PlaceOrder = ({ history }) => {
     const { cartItems, shippingInfo, paymentMethod } = useContext(CartContext)
+    const { order, orderSuccess, error, createOrder } = useContext(OrderContext)
 
     const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
 
@@ -18,8 +20,20 @@ const PlaceOrder = () => {
 
     const placeOrderHandler = e => {
         e.preventDefault()
-        // PlaceOrder
+        createOrder({
+            orderItems: cartItems, 
+            shippingInfo, 
+            paymentMethod, 
+            itemsPrice: Number(itemsPrice), 
+            shippingPrice: Number(shippingPrice), 
+            taxPrice: Number(taxPrice), 
+            totalPrice: Number(totalPrice)
+        })
     }
+
+    useEffect(() => {
+        orderSuccess && history.push(`/order/${order._id}`)
+    }, [orderSuccess])
 
     return (
         <>
@@ -98,6 +112,9 @@ const PlaceOrder = () => {
                                     <Col>Total</Col>
                                     <Col>${totalPrice}</Col>
                                 </Row>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                { error && <Message type='danger'>{error}</Message> }
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Button 

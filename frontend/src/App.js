@@ -14,30 +14,33 @@ import PlaceOrder from './components/pages/PlaceOrder'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
+import OrderContextProvider from './context/order/OrderContext'
 
 const App = () => {
   return (
     <UserContextProvider>
       <ProductContextProvider>
         <CartContextProvider>
-          <Router>
-            <Header/>
-            <main className='py-3'>
-              <Container>
-                <Route exact path='/' component={Home} />
-                <Route path='/product/:id' component={ProductDetail} />
-                {/* Make id parameter optional by adding '?' */}
-                <Route path='/cart/:id?' component={Cart} />
-                <Route path='/shipping' component={Shipping} />
-                <Route path='/payment' component={Payment} />
-                <Route path='/placeorder' component={PlaceOrder} />
-                <Route path='/signin' component={Login} />
-                <Route path='/signup' component={Register} />
-                <Route path='/profile' component={Profile} />
-              </Container>
-            </main>
-            <Footer/>
-          </Router>
+          <OrderContextProvider>
+            <Router>
+              <Header/>
+              <main className='py-3'>
+                <Container>
+                  <Route exact path='/' component={Home} />
+                  <Route path='/product/:id' component={ProductDetail} />
+                  {/* Make id parameter optional by adding '?' */}
+                  <Route path='/cart/:id?' component={Cart} />
+                  <Route path='/shipping' component={Shipping} />
+                  <Route path='/payment' component={Payment} />
+                  <Route path='/placeorder' component={PlaceOrder} />
+                  <Route path='/signin' component={Login} />
+                  <Route path='/signup' component={Register} />
+                  <Route path='/profile' component={Profile} />
+                </Container>
+              </main>
+              <Footer/>
+            </Router>
+          </OrderContextProvider>
         </CartContextProvider>
       </ProductContextProvider>
     </UserContextProvider>
