@@ -5,16 +5,21 @@ const protectRoute = require('../middleware/authMiddleware')
 const { 
     createOrder, 
     fetchOrderById, 
-    UpdateOrderToPaid
+    UpdateOrderToPaid, 
+    getUserOrders
 } = require('../controllers/orders')
 
 const router = express.Router()
 
 // @route   /api/orders
 // @access  Private
+router.route('/')
 // @method  POST
 // @desc    Create new order
-router.post('/', protectRoute, createOrder)
+.post(protectRoute, createOrder)
+// @method  GET
+// @desc    Get logged in user order
+.get(protectRoute, getUserOrders)
 
 // @route   /api/orders/:id
 // @access  Private

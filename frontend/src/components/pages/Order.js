@@ -6,11 +6,13 @@ import { Button, Col, Row, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../layout/Message'
 import Loader from '../layout/Loader'
 import { OrderContext } from '../../context/order/OrderContext'
+import { UserContext } from '../../context/user/UserContext'
 
-const Order = ({ match }) => {
+const Order = ({ history, match }) => {
     const orderId = match.params.id
 
     const { order, paySuccess, payLoading, loading, error, fetchOrderDetails, payOrder, payReset } = useContext(OrderContext)
+    const { user } = useContext(UserContext)
 
     const [sdkReady, setSdkReady] = useState(false)
 
@@ -21,6 +23,10 @@ const Order = ({ match }) => {
     }
 
     useEffect(() => {
+        if (!user) {
+            history.push('/signin')
+        }
+
         const addPayPalScript = async () => {
             const {data: clientId} = await axios.get('/api/config/paypal')
             const script = document.createElement('script')
@@ -33,7 +39,8 @@ const Order = ({ match }) => {
             document.body.appendChild(script)
         }
 
-        if (!order || paySuccess) {
+        if (!order || paySuccess || order._id !== orderId) {
+            // payRest must be invoked to avioid endless loop
             payReset()
             fetchOrderDetails(orderId)
         }
@@ -41,7 +48,7 @@ const Order = ({ match }) => {
             (!order.isPaid) && (!window.paypal ? addPayPalScript() : setSdkReady(true))
         }
 
-    }, [order, paySuccess])
+    }, [user, order, paySuccess])
 
     return (
         loading ? <Loader/> : error ? <Message type='danger'>{error}</Message> :
@@ -152,13 +159,14 @@ const Order = ({ match }) => {
                             </ListGroup.Item>
                             {!order.isPaid && (
                                 <ListGroup.Item>
-                                    {payLoading && <Loader/>}
-                                    {!sdkReady ? <Loader/> : (
-                                        <PayPalButton 
-                                            amount={order.totalPrice}
-                                            onSuccess={paymentHandler}
-                                        />
-                                    )}
+                                    {payLoading ? <Loader/> : 
+                                        !sdkReady ? <Loader/> : (
+                                            <PayPalButton 
+                                                amount={order.totalPrice}
+                                                onSuccess={paymentHandler}
+                                            />
+                                        )
+                                    }
                                 </ListGroup.Item>
                             )}
                         </ListGroup>

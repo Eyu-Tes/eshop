@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 
 export const CartContext = createContext()
@@ -55,6 +55,11 @@ const CartContextProvider = (props) => {
         setPaymentMethod(data)
     }
 
+    // clear cart
+    const clearCart = () => {
+        setCartItems([])
+    }
+
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems))
     }, [cartItems])
@@ -68,7 +73,8 @@ const CartContextProvider = (props) => {
                 addToCart, 
                 removeFromCart, 
                 saveShippingInfo, 
-                savePaymentMethod
+                savePaymentMethod, 
+                clearCart
             }}
         >
             {props.children}
