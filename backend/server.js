@@ -26,6 +26,9 @@ app.use('/api/users', require('./routes/users'))
 app.use('/api/products', require('./routes/products'))
 app.use('/api/orders', require('./routes/orders'))
 
+// paypal config route
+app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+
 // NB: This should be added after all the routes (otherwise it is going to get fired before the routes)
 // error middlewares
 app.use(notFound)               // Not Found Errors - non existing urls

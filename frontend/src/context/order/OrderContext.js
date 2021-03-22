@@ -10,14 +10,9 @@ const OrderContextProvider = ({ children }) => {
     const [order, setOrder] = useState(null)
     const [error, setError] = useState(null)
     const [orderSuccess, setOrderSuccess] = useState(false)
+    const [paySuccess, setPaySuccess] = useState(false)
+    const [payLoading, setPayLoading] = useState(false)
     const [loading, setLoading] = useState(false)
-
-    const config = {
-        headers: {
-            'Content-Type': 'application/json', 
-            Authorization: user.token
-        }
-    }
 
     // create an order
     const createOrder = async (order) => {
@@ -25,6 +20,12 @@ const OrderContextProvider = ({ children }) => {
         setError(null)
         setLoading(true)
         try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json', 
+                    Authorization: user.token
+                }
+            }
             const {data} = await axios.post('/api/orders', order, config)
             setOrder(data)
             setOrderSuccess(true)
@@ -42,6 +43,12 @@ const OrderContextProvider = ({ children }) => {
         setError(null)
         setLoading(true)
         try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json', 
+                    Authorization: user.token
+                }
+            }
             const {data} = await axios.get(`/api/orders/${id}`, config)
             setOrder(data)
             setLoading(false)
@@ -52,15 +59,47 @@ const OrderContextProvider = ({ children }) => {
         }
     } 
 
+    // pay order
+    const payOrder = async (orderId, paymentResult) => {
+        console.log(paymentResult)
+        setPaySuccess(false)
+        setPayLoading(true)
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json', 
+                    Authorization: user.token
+                }
+            }
+            const {data} = await axios.put(`/api/orders/${orderId}/pay`, paymentResult, config)
+            setOrder(data)
+            setPaySuccess(true)
+            setPayLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setPayLoading(false)
+        }
+    }
+
+    // pay reset
+    const payReset = () => {
+        setPaySuccess(false)
+    }
+
     return (
         <OrderContext.Provider
             value={{
                 order, 
                 error, 
                 orderSuccess, 
+                paySuccess, 
+                payLoading,
                 loading,
                 createOrder, 
-                fetchOrderDetails
+                fetchOrderDetails, 
+                payOrder, 
+                payReset
             }}
         >
             {children}
