@@ -12,6 +12,7 @@ import Shipping from './components/pages/Shipping'
 import Payment from './components/pages/Payment'
 import PlaceOrder from './components/pages/PlaceOrder'
 import Order from './components/pages/Order'
+import UserList from './components/pages/UserList'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
@@ -38,6 +39,7 @@ const App = () => {
                   <Route path='/signin' component={Login} />
                   <Route path='/signup' component={Register} />
                   <Route path='/profile' component={Profile} />
+                  <Route path='/admin/users' component={UserList} />
                 </Container>
               </main>
               <Footer/>

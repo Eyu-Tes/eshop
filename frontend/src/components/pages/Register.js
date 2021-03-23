@@ -16,6 +16,7 @@ const Register = ({ history}) => {
     }
     const [values, setValues] = useState(initialValues)
     const [message, setMessage] = useState(null)
+    const [submitted, setSubmitted] = useState(false)
     const {name, email, password, password2} = values
 
     const onChange = e => {
@@ -46,7 +47,7 @@ const Register = ({ history}) => {
         loading ? null : (
         <FormContainer>
             <h1>Sign Up</h1>
-            {error && <Message type='danger'>{error}</Message>}
+            {(error && submitted) && <Message type='danger'>{error}</Message>}
             {message && <Message type='danger'>{message}</Message>}
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='name'>

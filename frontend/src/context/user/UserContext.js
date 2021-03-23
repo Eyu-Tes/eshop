@@ -5,6 +5,7 @@ export const UserContext = createContext()
 
 const UserContextProvider = ({children}) => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
+    const [users, setUsers] = useState([])
     const [error, setError] = useState(null)
     const [updateSuccess, setUpdateSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -72,6 +73,23 @@ const UserContextProvider = ({children}) => {
         }
     }
 
+    // list users
+    const listUsers = async () => {
+        setLoading(true)
+        try {
+            const customConfig = {
+                headers: {...config.headers, Authorization: user.token}
+            }
+            const {data} = await axios.get('/api/users', customConfig)
+            setUsers(data)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
         if (user) {
             localStorage.setItem('user', JSON.stringify(user))
@@ -82,13 +100,15 @@ const UserContextProvider = ({children}) => {
         <UserContext.Provider 
             value={{
                 user, 
+                users, 
                 error, 
                 updateSuccess,
                 loading,
                 login, 
                 register, 
                 logout, 
-                updateUserProfile
+                updateUserProfile, 
+                listUsers
             }}
         >
             {children}

@@ -10,10 +10,12 @@ const Login = ({ history, location }) => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [submitted, setSubmitted] = useState(false)
 
     const redirect = location.search.split('=')[1]
 
     const submitHandler = e => {
+        setSubmitted(true)
         e.preventDefault()
         login(email, password)
     }
@@ -28,7 +30,7 @@ const Login = ({ history, location }) => {
         loading ? null : (
         <FormContainer>
             <h1>Sign In</h1>
-            {error && <Message type='danger'>{error}</Message>}
+            {(error && submitted) && <Message type='danger'>{error}</Message>}
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='email'>
                     <Form.Label>Email Address</Form.Label>

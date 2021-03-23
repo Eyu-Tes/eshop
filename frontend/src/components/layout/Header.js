@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import { UserContext } from '../../context/user/UserContext'
-import { underline } from 'colors'
 
 const Header = () => {
     const { user, logout } = useContext(UserContext)
@@ -41,7 +40,27 @@ const Header = () => {
                                         <i className='fa fa-user'></i> Sign In
                                     </NavLink>  
                                 )}
-                                
+                            </Nav.Item>
+                            <Nav.Item>
+                                {(user && user.isAdmin) && (
+                                    <NavDropdown title='Admin' id='adminmenu'>
+                                        <NavDropdown.Item as="div">
+                                            <NavLink to='/admin/users' className="d-block text-decoration-none">
+                                                Users
+                                            </NavLink>
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item as="div" style={{margin: '.5rem 0'}}>
+                                            <NavLink to='/admin/products' className="d-block text-decoration-none">
+                                                Products
+                                            </NavLink>
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item as="div">
+                                            <NavLink to='/admin/orders' className="d-block text-decoration-none">
+                                                Orders
+                                            </NavLink>
+                                        </NavDropdown.Item>
+                                    </NavDropdown>
+                                )}
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
