@@ -1,6 +1,6 @@
 const express = require('express')
 
-const protectRoute = require('../middleware/authMiddleware')
+const { protectRoute } = require('../middleware/authMiddleware')
 
 const { 
     createOrder, 

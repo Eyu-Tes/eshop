@@ -91,3 +91,8 @@ module.exports.updateUserProfile = asyncHandler(async (req, res) => {
         throw new Error('User not found')
     }
 })
+
+module.exports.fetchUsers = asyncHandler(async (req, res) => {
+    const users = await User.find()
+    res.json(users)
+})

@@ -1,12 +1,13 @@
 const express = require('express')
 
-const protectRoute = require('../middleware/authMiddleware')
+const { protectRoute, isAdmin } = require('../middleware/authMiddleware')
 
 const { 
     authUser,
     signupUser,
     getUserProfile, 
-    updateUserProfile
+    updateUserProfile, 
+    fetchUsers
 } = require('../controllers/users')
 
 const router = express.Router()
@@ -33,5 +34,11 @@ router.route('/profile')
 // @method  PUT
 // @desc    Update user profile
 .put(protectRoute, updateUserProfile)
+
+// @route   /api/users/
+// @access  Private/Admin
+// @method  GET
+// @desc    Fetch all users
+router.get('/', protectRoute, isAdmin, fetchUsers)
 
 module.exports = router
