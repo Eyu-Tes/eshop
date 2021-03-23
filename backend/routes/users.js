@@ -7,7 +7,8 @@ const {
     signupUser,
     getUserProfile, 
     updateUserProfile, 
-    fetchUsers
+    fetchUsers, 
+    deleteUser
 } = require('../controllers/users')
 
 const router = express.Router()
@@ -40,5 +41,11 @@ router.route('/profile')
 // @method  GET
 // @desc    Fetch all users
 router.get('/', protectRoute, isAdmin, fetchUsers)
+
+// @route   /api/users/:id
+// @access  Private/Admin
+// @method  DELETE
+// @desc    Delete user
+router.delete('/:id', protectRoute, isAdmin, deleteUser)
 
 module.exports = router

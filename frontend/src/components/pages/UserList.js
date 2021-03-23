@@ -8,10 +8,12 @@ import { UserContext } from '../../context/user/UserContext'
 
 
 const UserList = ({ history }) => {
-    const { user, users, error, loading, listUsers } = useContext(UserContext)
+    const { user, users, error, deleteSuccess, loading, listUsers, deleteUser } = useContext(UserContext)
 
     const deleteHandler = (id) => {
-        console.log('delete', id)
+        if (window.confirm('Sure u want to delete user?')) {
+            deleteUser(id)
+        }
     }
 
     useEffect(() => {
@@ -21,7 +23,7 @@ const UserList = ({ history }) => {
         else {
             history.push('/signin')
         }
-    }, [user])
+    }, [user, deleteSuccess])
 
     return (
         <>

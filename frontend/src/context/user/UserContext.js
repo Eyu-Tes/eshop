@@ -8,6 +8,7 @@ const UserContextProvider = ({children}) => {
     const [users, setUsers] = useState([])
     const [error, setError] = useState(null)
     const [updateSuccess, setUpdateSuccess] = useState(false)
+    const [deleteSuccess, setDeleteSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const config = {
@@ -90,6 +91,24 @@ const UserContextProvider = ({children}) => {
         }
     }
 
+    // delete user
+    const deleteUser = async (id) => {
+        setDeleteSuccess(false)
+        setLoading(true)
+        try {
+            const customConfig = {
+                headers: {...config.headers, Authorization: user.token}
+            }
+            const {data} = await axios.delete(`/api/users/${id}`, customConfig)
+            setDeleteSuccess(true)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
         if (user) {
             localStorage.setItem('user', JSON.stringify(user))
@@ -103,12 +122,14 @@ const UserContextProvider = ({children}) => {
                 users, 
                 error, 
                 updateSuccess,
+                deleteSuccess,
                 loading,
                 login, 
                 register, 
                 logout, 
                 updateUserProfile, 
-                listUsers
+                listUsers, 
+                deleteUser
             }}
         >
             {children}
