@@ -23,7 +23,7 @@ const UserList = ({ history }) => {
         else {
             history.push('/signin')
         }
-    }, [user, deleteSuccess])
+    }, [user, deleteSuccess, history])
 
     return (
         <>
@@ -51,7 +51,7 @@ const UserList = ({ history }) => {
                                     : <i className='fa fa-times' style={{color: '#f44336'}} /> }
                                 </td>
                                 <td>
-                                    <LinkContainer to={`/user/${user._id}/edit`}>
+                                    <LinkContainer to={`/admin/users/${user._id}/edit`}>
                                         <Button variant='light' className='btn-sm'>
                                             <i className="fa fa-edit" />
                                         </Button>

@@ -13,6 +13,7 @@ import Payment from './components/pages/Payment'
 import PlaceOrder from './components/pages/PlaceOrder'
 import Order from './components/pages/Order'
 import UserList from './components/pages/UserList'
+import UserEdit from './components/pages/UserEdit'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
@@ -39,7 +40,8 @@ const App = () => {
                   <Route path='/signin' component={Login} />
                   <Route path='/signup' component={Register} />
                   <Route path='/profile' component={Profile} />
-                  <Route path='/admin/users' component={UserList} />
+                  <Route exact path='/admin/users' component={UserList} />
+                  <Route path='/admin/users/:id/edit' component={UserEdit} />
                 </Container>
               </main>
               <Footer/>

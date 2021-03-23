@@ -6,6 +6,7 @@ export const UserContext = createContext()
 const UserContextProvider = ({children}) => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
     const [users, setUsers] = useState([])
+    const [targetUser, setTargetUser] = useState(null)
     const [error, setError] = useState(null)
     const [updateSuccess, setUpdateSuccess] = useState(false)
     const [deleteSuccess, setDeleteSuccess] = useState(false)
@@ -99,7 +100,7 @@ const UserContextProvider = ({children}) => {
             const customConfig = {
                 headers: {...config.headers, Authorization: user.token}
             }
-            const {data} = await axios.delete(`/api/users/${id}`, customConfig)
+            await axios.delete(`/api/users/${id}`, customConfig)
             setDeleteSuccess(true)
             setLoading(false)
         } catch (err) {
@@ -107,6 +108,51 @@ const UserContextProvider = ({children}) => {
             setError(err.response.data.message)
             setLoading(false)
         }
+    }
+
+    // get user info
+    const getUserInfo = async (id) => {
+        setTargetUser(null)
+        setLoading(true)
+        try {
+            const customConfig = {
+                headers: {...config.headers, Authorization: user.token}
+            }
+            const { data } = await axios.get(`/api/users/${id}`, customConfig)
+            setTargetUser(data)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setLoading(false)
+        }
+    }
+
+    // update user info by admin
+    const adminUpdateUser = async (targetUser) => {
+        setTargetUser(null)
+        setUpdateSuccess(false)
+        setLoading(true)
+        try {
+            const customConfig = {
+                headers: {...config.headers, Authorization: user.token}
+            }
+            const { data } = await axios.put(`/api/users/${targetUser._id}`, targetUser, customConfig)
+            setTargetUser(data)
+            setUpdateSuccess(true)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setLoading(false)
+        }
+    }
+
+    // reset states
+    const reset = () => {
+        setTargetUser(null)
+        setUpdateSuccess(false)
+        setError(null)
     }
 
     useEffect(() => {
@@ -120,6 +166,7 @@ const UserContextProvider = ({children}) => {
             value={{
                 user, 
                 users, 
+                targetUser,
                 error, 
                 updateSuccess,
                 deleteSuccess,
@@ -129,7 +176,10 @@ const UserContextProvider = ({children}) => {
                 logout, 
                 updateUserProfile, 
                 listUsers, 
-                deleteUser
+                deleteUser, 
+                getUserInfo,
+                adminUpdateUser, 
+                reset
             }}
         >
             {children}

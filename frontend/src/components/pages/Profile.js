@@ -6,9 +6,10 @@ import Message from '../../components/layout/Message'
 import Loader from '../../components/layout/Loader'
 import { UserContext } from '../../context/user/UserContext'
 import { OrderContext } from '../../context/order/OrderContext'
+import { reset } from 'colors'
 
 const Profile = ({ history}) => {
-    const { user, error, updateSuccess, loading , updateUserProfile } = useContext(UserContext)
+    const { user, error, updateSuccess, loading , updateUserProfile, reset} = useContext(UserContext)
     const { orders, loading: ordersLoading, error: ordersError, listUserOrders } = useContext(OrderContext)
 
     const initialValues = {
@@ -40,6 +41,10 @@ const Profile = ({ history}) => {
     }
 
     useEffect(() => {
+        if (updateSuccess) {
+            reset()
+        }
+
         if (user) {
             setValues({...values, name: user.name, email: user.email})
             listUserOrders()
@@ -47,7 +52,7 @@ const Profile = ({ history}) => {
         else {
             history.push('/signin')
         }
-    }, [user, history])
+    }, [user, updateSuccess, history])
 
     return (
         <Row>

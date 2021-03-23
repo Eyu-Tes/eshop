@@ -38,7 +38,7 @@ module.exports.isAdmin = asyncHandler(async (req, res, next) => {
         }
         else {
             res.status(401)
-            throw new Error('Not authorized, Not admin')
+            throw new Error('Not authorized, not admin')
         }
     }
 })
