@@ -3,19 +3,26 @@ const express = require('express')
 const { 
     fetchProducts, 
     fetchProduct, 
-    deleteProduct
+    deleteProduct, 
+    createProduct, 
+    updateProduct
 } = require('../controllers/products')
 
-const { protectRoute } = require('../middleware/authMiddleware')
+const { protectRoute, isAdmin } = require('../middleware/authMiddleware')
 
 
 const router = express.Router()
 
 // @route   /api/products
+router.route('/')
 // @access  Public
 // @method  GET
 // @desc    Fetch all products
-router.get('/', fetchProducts)
+.get(fetchProducts)
+// @access  Public/Admin
+// @method  POST
+// @desc    Create product
+.post(protectRoute, isAdmin, createProduct)
 
 // @route   /api/products/:id
 router.route('/:id')
@@ -23,9 +30,13 @@ router.route('/:id')
 // @method  GET
 // @desc    Fetch a single product by id
 .get(fetchProduct)
-// @access  Private
+// @access  Private/Admin
 // @method  DELETE
 // @desc    Delete product
-.delete(protectRoute, deleteProduct)
+.delete(protectRoute, isAdmin, deleteProduct)
+// @access  Private/Admin
+// @method  PUT
+// @desc    Update product
+.put(protectRoute, isAdmin, updateProduct)
 
 module.exports = router

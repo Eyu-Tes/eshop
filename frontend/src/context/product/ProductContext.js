@@ -69,6 +69,10 @@ const ProductContextProvider = (props) => {
         }
     }
 
+    const clearCurrent = () => {
+        setProduct(null)
+    }
+
     return (
         <ProductContext.Provider
             value={{
