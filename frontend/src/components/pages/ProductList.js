@@ -10,7 +10,7 @@ import { ProductContext } from '../../context/product/ProductContext'
 
 const ProductList = ({ history, match }) => {
     const { user } = useContext(UserContext)
-    const { products, error,  loading, fetchProducts } = useContext(ProductContext)
+    const { products, error, deleteSuccess, loading, fetchProducts, deleteProduct } = useContext(ProductContext)
 
     const createProductHandler = () => {
 
@@ -18,7 +18,7 @@ const ProductList = ({ history, match }) => {
 
     const deleteHandler = (id) => {
         if (window.confirm('Sure u want to delete product?')) {
-            // delete product
+            deleteProduct(id)
         }
     }
 
@@ -29,7 +29,7 @@ const ProductList = ({ history, match }) => {
         else {
             fetchProducts()   
         }
-    }, [user, history])
+    }, [user, deleteSuccess, history])
 
     return (
         <>
@@ -43,7 +43,8 @@ const ProductList = ({ history, match }) => {
                     </Button>
                 </Col>
             </Row>
-            {loading ? <Loader/> : ( error ? <Message type='danger'>{error}</Message> : 
+            {error && <Message type='danger'>{error}</Message>}
+            {loading ? <Loader/> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
                         <tr>

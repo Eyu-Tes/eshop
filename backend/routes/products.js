@@ -1,8 +1,13 @@
 const express = require('express')
+
 const { 
     fetchProducts, 
-    fetchProduct
+    fetchProduct, 
+    deleteProduct
 } = require('../controllers/products')
+
+const { protectRoute } = require('../middleware/authMiddleware')
+
 
 const router = express.Router()
 
@@ -13,9 +18,14 @@ const router = express.Router()
 router.get('/', fetchProducts)
 
 // @route   /api/products/:id
+router.route('/:id')
 // @access  Public
 // @method  GET
 // @desc    Fetch a single product by id
-router.get('/:id', fetchProduct)
+.get(fetchProduct)
+// @access  Private
+// @method  DELETE
+// @desc    Delete product
+.delete(protectRoute, deleteProduct)
 
 module.exports = router
