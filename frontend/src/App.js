@@ -15,6 +15,7 @@ import Order from './components/pages/Order'
 import UserList from './components/pages/UserList'
 import UserEdit from './components/pages/UserEdit'
 import ProductList from './components/pages/ProductList'
+import ProductForm from './components/pages/ProductForm'
 import UserContextProvider from './context/user/UserContext'
 import ProductContextProvider from './context/product/ProductContext'
 import CartContextProvider from './context/cart/CartContext'
@@ -44,6 +45,7 @@ const App = () => {
                   <Route exact path='/admin/users' component={UserList} />
                   <Route path='/admin/users/:id/edit' component={UserEdit} />
                   <Route exact path='/admin/products' component={ProductList} />
+                  <Route path='/admin/products/form/:id?' component={ProductForm} />
                 </Container>
               </main>
               <Footer/>

@@ -10,10 +10,10 @@ import { ProductContext } from '../../context/product/ProductContext'
 
 const ProductList = ({ history, match }) => {
     const { user } = useContext(UserContext)
-    const { products, error, deleteSuccess, loading, fetchProducts, deleteProduct } = useContext(ProductContext)
+    const { products, error, deleteSuccess, loading, fetchProducts, deleteProduct} = useContext(ProductContext)
 
     const createProductHandler = () => {
-
+        history.push('/admin/products/form')
     }
 
     const deleteHandler = (id) => {
@@ -71,7 +71,7 @@ const ProductList = ({ history, match }) => {
                                     : <i className='fa fa-times' style={{color: '#f44336'}} /> }
                                 </td>
                                 <td>
-                                    <LinkContainer to={`/admin/products/${product._id}/edit`}>
+                                    <LinkContainer to={`/admin/products/form/${product._id}`}>
                                         <Button variant='light' className='btn-sm'>
                                             <i className="fa fa-edit" />
                                         </Button>
