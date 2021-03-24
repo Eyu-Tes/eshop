@@ -1,57 +1,76 @@
 import { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Button, Table } from 'react-bootstrap'
+import { Button, Table, Row, Col } from 'react-bootstrap'
 import Message from '../../components/layout/Message'
 import Loader from '../../components/layout/Loader'
 import { UserContext } from '../../context/user/UserContext'
+import { ProductContext } from '../../context/product/ProductContext'
 
 
-const UserList = ({ history }) => {
-    const { user, users, error, deleteSuccess, loading, listUsers, deleteUser } = useContext(UserContext)
+const ProductList = ({ history, match }) => {
+    const { user } = useContext(UserContext)
+    const { products, error,  loading, fetchProducts } = useContext(ProductContext)
+
+    const createProductHandler = () => {
+
+    }
 
     const deleteHandler = (id) => {
-        if (window.confirm('Sure u want to delete user?')) {
-            deleteUser(id)
+        if (window.confirm('Sure u want to delete product?')) {
+            // delete product
         }
     }
 
     useEffect(() => {
-        if (user && user.isAdmin) {
-            listUsers()
-        }
-        else {
+        if (!(user && user.isAdmin)) {
             history.push('/signin')
         }
-    }, [user, deleteSuccess, history])
+        else {
+            fetchProducts()   
+        }
+    }, [user, history])
 
     return (
         <>
-            <h1>Users</h1>
+            <Row className='align-items-center'>
+                <Col>
+                    <h1>Products</h1>
+                </Col>
+                <Col className='text-right'>
+                    <Button className='my-3' onClick={createProductHandler}>
+                        <i className="fa fa-plus mr-1"></i> Create Product
+                    </Button>
+                </Col>
+            </Row>
             {loading ? <Loader/> : ( error ? <Message type='danger'>{error}</Message> : 
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>NAME</th>
-                            <th>EMAIL</th>
-                            <th>ADMIN</th>
+                            <th>PRICE</th>
+                            <th>CATEGORY</th>
+                            <th>BRAND</th>
+                            <th>In Stock</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
-                            <tr key={user._id}>
-                                <td>{user._id.substring(0, 5)}...</td>
-                                <td>{user.name}</td>
-                                <td><a href={`mailto:${user.email}`}>{user.email}</a></td>
+                        {products.map(product => (
+                            <tr key={product._id}>
+                                <td>{product._id.substring(0, 5)}...</td>
+                                <td><a href={`/product/${product._id}`}>{product.name}</a></td>
+                                <td>${product.price}</td>
+                                <td>{product.category}</td>
+                                <td>{product.brand}</td>
                                 <td>
-                                    {user.isAdmin 
+                                    {product.countInStock > 0
                                     ? <i className='fa fa-check' style={{color: '#4caf50'}} /> 
                                     : <i className='fa fa-times' style={{color: '#f44336'}} /> }
                                 </td>
                                 <td>
-                                    <LinkContainer to={`/admin/users/${user._id}/edit`}>
+                                    <LinkContainer to={`/admin/products/${product._id}/edit`}>
                                         <Button variant='light' className='btn-sm'>
                                             <i className="fa fa-edit" />
                                         </Button>
@@ -59,7 +78,7 @@ const UserList = ({ history }) => {
                                     <Button 
                                         variant='danger' 
                                         className='btn-sm' 
-                                        onClick={() => deleteHandler(user._id)}
+                                        onClick={() => deleteHandler(product._id)}
                                     >
                                             <i className="fa fa-trash" />
                                     </Button>
@@ -73,4 +92,4 @@ const UserList = ({ history }) => {
     )
 } 
 
-export default UserList
+export default ProductList
