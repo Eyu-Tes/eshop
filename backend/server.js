@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const dotenv = require('dotenv')
 const colors = require('colors')
@@ -25,9 +26,14 @@ app.get('/', (req, res) => {
 app.use('/api/users', require('./routes/users'))
 app.use('/api/products', require('./routes/products'))
 app.use('/api/orders', require('./routes/orders'))
+app.use('/api/upload', require('./routes/uploads'))
 
 // paypal config route
 app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+
+// Make 'uploads/' folder static, so it can get loaded in the browser
+const dir = path.resolve()
+app.use('/uploads', express.static(path.join(dir, 'uploads')))
 
 // NB: This should be added after all the routes (otherwise it is going to get fired before the routes)
 // error middlewares

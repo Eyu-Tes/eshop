@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { Button, Form, Col, Row } from 'react-bootstrap'
 import Message from '../../components/layout/Message'
+import Loader from '../../components/layout/Loader'
 import FormContainer from '../../components/layout/FormContainer'
 import { UserContext } from '../../context/user/UserContext'
 import { ProductContext } from '../../context/product/ProductContext'
@@ -24,22 +26,44 @@ const ProductForm = ({ history, match}) => {
     const initialValues = {
         name: '',
         price: 0, 
-        image: '', 
         brand: '', 
         category: '', 
         countInStock: 0, 
         description: ''
     }
     const [values, setValues] = useState(initialValues)
-    const {name, price, image, brand, category, countInStock, description} = values
+    const [image, setImage] = useState('')
+    const [uploading, setUploading] = useState(false)
+    const {name, price, brand, category, countInStock, description} = values
+
+    const submitHandler = e => {
+        const data = {...values, image}
+        e.preventDefault()
+        targetProductId ? updateProduct(targetProductId, data) : createProduct(data)
+    }
+
+    const uploadFileHandler = async (e) => {
+        const file = e.target.files[0]
+        const formData = new FormData()
+        formData.append('image', file)
+        setUploading(true)
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+            const {data} = await axios.post('/api/upload', formData, config)
+            setImage(data)
+            setUploading(false)
+        } catch (err) {
+            console.log(err)
+            setUploading(false)
+        }
+    }
 
     const onChange = e => {
         setValues({...values, [e.target.name]: e.target.value})
-    }
-
-    const submitHandler = e => {
-        e.preventDefault()
-        targetProductId ? updateProduct(targetProductId, values) : createProduct(values)
     }
 
     useEffect(() => {
@@ -50,7 +74,6 @@ const ProductForm = ({ history, match}) => {
         else {
             if (user && user.isAdmin) {
                 if (product && (product._id === targetProductId)) {
-                    console.log('hahahaha')
                     setValues({...product})
                 }
                 else {
@@ -102,13 +125,14 @@ const ProductForm = ({ history, match}) => {
                         <Col md={6}>
                             <Form.Group controlId='image'>
                                 <Form.Label>Image</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Enter image url'
-                                    name='image'
-                                    value={image}
-                                    onChange={onChange}
-                                ></Form.Control>
+                                <div>{image}</div>
+                                <Form.File 
+                                    id='image-file' 
+                                    label='Choose File'
+                                    custom
+                                    onChange={uploadFileHandler}
+                                ></Form.File>
+                                {uploading  && <Loader/>}
                             </Form.Group>
                         </Col>
                         <Col md={6}>
