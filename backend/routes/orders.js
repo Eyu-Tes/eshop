@@ -1,25 +1,34 @@
 const express = require('express')
 
-const { protectRoute } = require('../middleware/authMiddleware')
+const { protectRoute, isAdmin } = require('../middleware/authMiddleware')
 
 const { 
     createOrder, 
     fetchOrderById, 
-    UpdateOrderToPaid, 
-    getUserOrders
+    getUserOrders, 
+    getAllOrders,
+    updateOrderToPaid, 
+    updateOrderToDelivered
 } = require('../controllers/orders')
 
 const router = express.Router()
 
 // @route   /api/orders
-// @access  Private
 router.route('/')
+// @access  Private
 // @method  POST
 // @desc    Create new order
 .post(protectRoute, createOrder)
+// @access  Private/Admin
+// @method  GET
+// @desc    Get all orders
+.get(protectRoute, isAdmin, getAllOrders)
+
+// @route   /api/orders/myorders
+// @access  Private
 // @method  GET
 // @desc    Get logged in user order
-.get(protectRoute, getUserOrders)
+router.get('/myorders', protectRoute, getUserOrders)
 
 // @route   /api/orders/:id
 // @access  Private
@@ -31,6 +40,12 @@ router.get('/:id', protectRoute, fetchOrderById)
 // @access  Private
 // @method  PUT
 // @desc    Update order to paid
-router.put('/:id/pay', protectRoute, UpdateOrderToPaid)
+router.put('/:id/pay', protectRoute, updateOrderToPaid)
+
+// @route   /api/orders/:id/deliver
+// @access  Private/Admin
+// @method  PUT
+// @desc    Update order to delivered
+router.put('/:id/deliver', protectRoute, isAdmin, updateOrderToDelivered)
 
 module.exports = router

@@ -47,8 +47,20 @@ module.exports.fetchOrderById = asyncHandler(async (req, res) => {
     }
 })
 
+// get orders from logged in user
+module.exports.getUserOrders = asyncHandler(async (req, res) => {
+    const orders = await Order.find({user: req.user.id})
+    res.json(orders)
+})
+
+// get all orders
+module.exports.getAllOrders = asyncHandler(async (req, res) => {
+    const orders = await Order.find().populate('user', 'name')
+    res.json(orders)
+})
+
 // update order to paid
-module.exports.UpdateOrderToPaid = asyncHandler(async (req, res) => {
+module.exports.updateOrderToPaid = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id)
     if (order) {
         order.isPaid = true
@@ -68,8 +80,17 @@ module.exports.UpdateOrderToPaid = asyncHandler(async (req, res) => {
     }
 })
 
-// get orders from logged in user
-module.exports.getUserOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find({user: req.user.id})
-    res.json(orders)
+// update order to delivered
+module.exports.updateOrderToDelivered = asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id)
+    if (order) {
+        order.isDelivered = true
+        order.deliveredAt = Date.now()
+        const updatedOrder = await order.save()
+        res.json(updatedOrder)
+    }
+    else {
+        res.status(404)
+        throw new Error('Order not found')
+    }
 })

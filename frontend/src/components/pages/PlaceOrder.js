@@ -32,7 +32,9 @@ const PlaceOrder = ({ history }) => {
     }
 
     useEffect(() => {
-        orderSuccess && history.push(`/order/${order._id}`)
+        if (order && orderSuccess) {
+            history.push(`/order/${order._id}`)
+        } 
     }, [orderSuccess])
 
     return (

@@ -11,8 +11,20 @@ import { UserContext } from '../../context/user/UserContext'
 const Order = ({ history, match }) => {
     const orderId = match.params.id
 
-    const { order, paySuccess, payLoading, loading, error, fetchOrderDetails, payOrder, payReset } = useContext(OrderContext)
     const { user } = useContext(UserContext)
+
+    const { 
+        order, 
+        paySuccess, 
+        deliverSuccess,
+        payLoading, 
+        loading, 
+        error, 
+        fetchOrderDetails, 
+        payOrder, 
+        deliverOrder,
+        reset 
+    } = useContext(OrderContext)
 
     const [sdkReady, setSdkReady] = useState(false)
 
@@ -20,6 +32,10 @@ const Order = ({ history, match }) => {
 
     const paymentHandler = paymentResult => {
         payOrder(orderId, paymentResult)
+    }
+
+    const deliverHandler = () => {
+        deliverOrder(orderId)
     }
 
     useEffect(() => {
@@ -39,9 +55,9 @@ const Order = ({ history, match }) => {
             document.body.appendChild(script)
         }
 
-        if (!order || paySuccess || order._id !== orderId) {
-            // payRest must be invoked to avioid endless loop
-            payReset()
+        if (!order || paySuccess || deliverSuccess || order._id !== orderId) {
+            // rest must be invoked to avioid endless loop
+            reset()
             fetchOrderDetails(orderId)
         }
         else {
@@ -169,6 +185,17 @@ const Order = ({ history, match }) => {
                                     }
                                 </ListGroup.Item>
                             )}
+                            <ListGroup.Item>
+                                {(user && user.isAdmin && order.isPaid && !order.isDelivered) && (
+                                    <Button 
+                                        type='button'
+                                        className='btn-block'
+                                        onClick={deliverHandler}
+                                    >
+                                        Mark as Delivered    
+                                    </Button>
+                                )}
+                            </ListGroup.Item>
                         </ListGroup>
                     </Card>
                 </Col>
