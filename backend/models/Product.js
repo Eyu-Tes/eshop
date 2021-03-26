@@ -3,7 +3,12 @@ const mongoose = require('mongoose')
 const ReviewSchema = new mongoose.Schema({
     name: {type: String, required: true},
     rating: {type: Number, required: true},
-    comment: {type: String, required: true}
+    comment: {type: String, required: true}, 
+    user: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User', 
+        required: true
+    }
 }, {
     timestamps: true
 })
@@ -38,13 +43,17 @@ const ProductSchema = new mongoose.Schema({
     }, 
     // The array shows that this propery is related to many review objects
     reviews: [ 
-        ReviewSchema , 
-
+        ReviewSchema 
         // OR
         // {
         //     name: {type: String, required: true},
         //     rating: {type: Number, required: true},
-        //     comment: {type: String, required: true}
+        //     comment: {type: String, required: true}, 
+        //     user: {
+        //         type: mongoose.Schema.Types.ObjectId, 
+        //         ref: 'User', 
+        //         required: true
+        //     }
         // }
     ],
     rating: {

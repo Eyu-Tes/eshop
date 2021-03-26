@@ -5,7 +5,8 @@ const {
     fetchProduct, 
     deleteProduct, 
     createProduct, 
-    updateProduct
+    updateProduct, 
+    createReview
 } = require('../controllers/products')
 
 const { protectRoute, isAdmin } = require('../middleware/authMiddleware')
@@ -38,5 +39,11 @@ router.route('/:id')
 // @method  PUT
 // @desc    Update product
 .put(protectRoute, isAdmin, updateProduct)
+
+// @route   /api/products/:id/reviews
+// @access  Private
+// @method  POST
+// @desc    Create a new review
+router.post('/:id/reviews', protectRoute, createReview)
 
 module.exports = router

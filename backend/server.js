@@ -1,6 +1,7 @@
 const path = require('path')
 const express = require('express')
 const dotenv = require('dotenv')
+const morgan = require('morgan')
 const colors = require('colors')
 const { notFound, errorHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
@@ -14,6 +15,9 @@ dotenv.config()
 connectDB()
 
 const app = express()
+
+// use HTTP request logger middleware if server is running in development mode
+process.env.NODE_ENV === 'development' && app.use(morgan('dev'))
 
 // body parser middleware (required inorder to accept json data in request body)
 app.use(express.json())

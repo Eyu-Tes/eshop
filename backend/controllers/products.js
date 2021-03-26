@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Product = require('../models/Product')
+const User = require('../models/User')
 
 // fetch all products
 module.exports.fetchProducts = asyncHandler(async (req, res) => {
@@ -66,6 +67,41 @@ module.exports.updateProduct = asyncHandler(async (req, res) => {
 
         const updatedProduct = await product.save()
         res.json(updatedProduct)
+    }
+    else {
+        res.status(404)
+        throw new Error('Product not found')
+    }
+})
+
+// create review
+module.exports.createReview = asyncHandler(async (req, res) => {
+    const {rating, comment} = req.body
+    const product = await Product.findById(req.params.id)
+    const loggedInUser = await User.findById(req.user.id)
+    if (product) {
+        const alreadyReviewed = await product.reviews.find(review => 
+            review.user.toString() === review.user._id.toString())
+        
+        if (alreadyReviewed) {
+            // bad request
+            res.status(400)
+            throw new Error('Product already reviewed')
+        }
+
+        const review = {
+            name: loggedInUser.name, 
+            rating: Number(rating), 
+            comment, 
+            user: loggedInUser._id
+        }
+
+        product.reviews.push(review)
+        product.numReviews = product.reviews.length
+        product.rating = product.reviews.reduce((acc, cur) => cur.rating + acc, 0) / product.reviews.length
+
+        await product.save()
+        res.status(201).json({message: 'Review added'})
     }
     else {
         res.status(404)
