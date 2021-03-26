@@ -12,6 +12,7 @@ const ProductContextProvider = (props) => {
     const [formSuccess, setFormSuccess] = useState(false)
     const [deleteSuccess, setDeleteSuccess] = useState(false)
     const [error, setError] = useState(null)
+    const [reviewError, setReviewError] = useState(null)
     const [loading, setLoading] = useState(false)
 
     const config = {
@@ -113,6 +114,24 @@ const ProductContextProvider = (props) => {
         }
     }
 
+    // create product rating
+    const createProductReview = async (prodId, review) => {
+        setReviewError(null)
+        setLoading(true)
+        try {
+            const customConfig = {
+                headers: {...config.headers, Authorization: user.token}
+            }
+            const {data} = await axios.post(`/api/products/${prodId}/reviews`, review, customConfig)
+            setProduct(data)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setReviewError(err.response.data.message)
+            setLoading(false)
+        }
+    }
+
     // reset states
     const reset = () => {
         setProduct(null)
@@ -126,6 +145,7 @@ const ProductContextProvider = (props) => {
                 products, 
                 product,
                 error,
+                reviewError, 
                 formSuccess,
                 deleteSuccess, 
                 loading,
@@ -134,6 +154,7 @@ const ProductContextProvider = (props) => {
                 deleteProduct, 
                 createProduct, 
                 updateProduct, 
+                createProductReview,
                 reset
             }}
         >

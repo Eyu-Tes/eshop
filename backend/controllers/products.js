@@ -81,7 +81,8 @@ module.exports.createReview = asyncHandler(async (req, res) => {
     const loggedInUser = await User.findById(req.user.id)
     if (product) {
         const alreadyReviewed = await product.reviews.find(review => 
-            review.user.toString() === review.user._id.toString())
+            review.user.toString() === req.user.id.toString()
+        )
         
         if (alreadyReviewed) {
             // bad request
@@ -100,8 +101,8 @@ module.exports.createReview = asyncHandler(async (req, res) => {
         product.numReviews = product.reviews.length
         product.rating = product.reviews.reduce((acc, cur) => cur.rating + acc, 0) / product.reviews.length
 
-        await product.save()
-        res.status(201).json({message: 'Review added'})
+        const updatedProduct = await product.save()
+        res.status(201).json(updatedProduct)
     }
     else {
         res.status(404)
