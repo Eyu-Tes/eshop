@@ -4,7 +4,14 @@ const User = require('../models/User')
 
 // fetch all products
 module.exports.fetchProducts = asyncHandler(async (req, res) => {
-    const products = await Product.find()
+    // get query strings using req.query.<name>
+    const keyword = req.query.keyword ? {
+        name: {
+            $regex: req.query.keyword, 
+            $options: 'i'
+        }
+    } : {}
+    const products = await Product.find({ ...keyword })
     res.json(products)
 })
 

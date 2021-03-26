@@ -5,12 +5,14 @@ import Message from '../layout/Message'
 import Product from '../products/Product'
 import { ProductContext } from '../../context/product/ProductContext'
 
-const Home = () => {
+const Home = ({ match }) => {
+    const keyword = match.params.keyword
+
     const { products, error, loading, fetchProducts } = useContext(ProductContext)
 
     useEffect(() => {
-        fetchProducts()
-    }, [])
+        fetchProducts(keyword)
+    }, [keyword])
 
     return (
         <>

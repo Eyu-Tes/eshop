@@ -22,12 +22,12 @@ const ProductContextProvider = (props) => {
     }
 
     // fetch products
-    const fetchProducts = async () => {
+    const fetchProducts = async (keyword='') => {
         setProducts([])
         setError(null)
         setLoading(true)
         try {
-            const {data} = await axios.get('/api/products')
+            const {data} = await axios.get(`/api/products?keyword=${keyword}`)
             setProducts(data)
             setLoading(false)
         } catch (err) {

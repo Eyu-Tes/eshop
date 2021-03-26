@@ -1,7 +1,8 @@
 import { useContext } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Route, NavLink } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap'
+import SerachProduct, { SearcProduct } from '../products/SearchProduct'
 import { UserContext } from '../../context/user/UserContext'
 
 const Header = () => {
@@ -9,13 +10,14 @@ const Header = () => {
 
     return (
         <header>
-            <Navbar bg='dark' variant='dark' expand='md' collapseOnSelect>
+            <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
                 <Container>
                     <LinkContainer to=''>
                         <Navbar.Brand>ProShop</Navbar.Brand>
                     </LinkContainer>
                     <Navbar.Toggle aria-controls='basic-navbar-nav' />
                     <Navbar.Collapse id='basic-navbar-nav'>
+                        <Route render={({history}) => <SerachProduct history={history}/>}/>
                         <Nav className='ml-auto'>
                             <Nav.Item>
                                 <NavLink className="nav-link" to='/cart'>

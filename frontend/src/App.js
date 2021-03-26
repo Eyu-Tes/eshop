@@ -33,6 +33,7 @@ const App = () => {
               <main className='py-3'>
                 <Container>
                   <Route exact path='/' component={Home} />
+                  <Route exact path='/search/:keyword' component={Home} />
                   <Route path='/product/:id' component={ProductDetail} />
                   {/* Make id parameter optional by adding '?' */}
                   <Route path='/cart/:id?' component={Cart} />
