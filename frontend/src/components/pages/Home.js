@@ -1,11 +1,13 @@
 import { useContext, useEffect } from 'react'
 import queryString from 'query-string'
+import { Link } from 'react-router-dom'
 import { Col, Pagination, Row } from 'react-bootstrap'
 import Loader from '../layout/Loader'
 import Message from '../layout/Message'
 import Paginate from '../layout/Paginate'
 import Product from '../products/Product'
 import ProductCarousel from '../products/ProductCarousel'
+import Meta from '../layout/Meta'
 import { ProductContext } from '../../context/product/ProductContext'
 
 const Home = ({ match, location }) => {
@@ -21,7 +23,12 @@ const Home = ({ match, location }) => {
 
     return (
         <>
-            { !keyword &&  <ProductCarousel /> }
+            <Meta />
+            { !keyword ? <ProductCarousel /> : (
+                <Link className='btn btn-light my-3' to='/'>
+                    Go Back
+                </Link>
+            )}
             <h1>Latest Products</h1>
             {
                 loading ? <Loader /> :

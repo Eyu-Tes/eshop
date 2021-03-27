@@ -5,6 +5,7 @@ import Loader from '../layout/Loader'
 import Message from '../layout/Message'
 import Rating from '../products/Rating'
 import Reviews from '../products/Reviews'
+import Meta from '../layout/Meta'
 import { UserContext } from '../../context/user/UserContext'
 import { ProductContext } from '../../context/product/ProductContext'
 
@@ -33,6 +34,7 @@ const ProductDetail = ({match, history}) => {
             (error ? <Message type="danger">{error}</Message> :
             product && ( 
                 <>
+                    <Meta title={product.name} />
                     <Row>
                         <Col md={6} lg={5}>
                             <Image fluid src={product.image} alt={product.name} />
