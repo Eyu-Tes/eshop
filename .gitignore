@@ -30,6 +30,9 @@ yarn-error.log*
 /frontend/public/uploads/*
 !/frontend/public/uploads/file.txt
 
+/frontend/public/images/*
+!/frontend/public/images/file.txt
+
 .vscode/
 
 /notes/
