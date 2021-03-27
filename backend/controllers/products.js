@@ -2,17 +2,35 @@ const asyncHandler = require('express-async-handler')
 const Product = require('../models/Product')
 const User = require('../models/User')
 
+const Paginator = require('../utils/paginator')
+
 // fetch all products
 module.exports.fetchProducts = asyncHandler(async (req, res) => {
+    // destructure page & limit from req.query
+    let {page, limit} = req.query
+    page = page !== '' ? Number(page) : 1
+    limit = limit !== '' ? Number(limit) : 12
+
     // get query strings using req.query.<name>
     const keyword = req.query.keyword ? {
+        // Mongo DB regex
         name: {
             $regex: req.query.keyword, 
             $options: 'i'
         }
     } : {}
+
+    // get the total number of products
+    const numberOfProducts = await Product.countDocuments({ ...keyword })
+    // instantiate paginator
+    const paginator = new Paginator(numberOfProducts, limit)
+    const pageObj = paginator.getPage(page)
+
     const products = await Product.find({ ...keyword })
-    res.json(products)
+    .limit(limit * 1)
+    .skip(limit * (page-1))
+
+    res.json({products, pageObj})
 })
 
 // fetch a single product

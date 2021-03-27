@@ -9,6 +9,7 @@ const ProductContextProvider = (props) => {
 
     const [products, setProducts] = useState([])
     const [product, setProduct] = useState(null)
+    const [pageObj, setPageObj] = useState('')
     const [formSuccess, setFormSuccess] = useState(false)
     const [deleteSuccess, setDeleteSuccess] = useState(false)
     const [error, setError] = useState(null)
@@ -22,13 +23,15 @@ const ProductContextProvider = (props) => {
     }
 
     // fetch products
-    const fetchProducts = async (keyword='') => {
+    const fetchProducts = async (keyword='', page='', limit='') => {
         setProducts([])
         setError(null)
         setLoading(true)
         try {
-            const {data} = await axios.get(`/api/products?keyword=${keyword}`)
-            setProducts(data)
+            const {data} = await axios
+            .get(`/api/products?keyword=${keyword}&page=${page}&limit=${limit}`)
+            setProducts(data.products)
+            setPageObj(data.pageObj)
             setLoading(false)
         } catch (err) {
             console.log(err)
@@ -144,6 +147,7 @@ const ProductContextProvider = (props) => {
             value={{
                 products, 
                 product,
+                pageObj,
                 error,
                 reviewError, 
                 formSuccess,

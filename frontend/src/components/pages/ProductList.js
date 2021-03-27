@@ -1,16 +1,28 @@
 import { useContext, useEffect } from 'react'
+import queryString from 'query-string'
 import { Link } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Button, Table, Row, Col } from 'react-bootstrap'
 import Message from '../../components/layout/Message'
 import Loader from '../../components/layout/Loader'
+import Paginate from '../layout/Paginate'
 import { UserContext } from '../../context/user/UserContext'
 import { ProductContext } from '../../context/product/ProductContext'
 
 
-const ProductList = ({ history, match }) => {
+const ProductList = ({ history, match, location }) => {
+    const { page, limit } = queryString.parse(location.search)
+
     const { user } = useContext(UserContext)
-    const { products, error, deleteSuccess, loading, fetchProducts, deleteProduct} = useContext(ProductContext)
+    const { 
+        products, 
+        pageObj,
+        error, 
+        deleteSuccess, 
+        loading, 
+        fetchProducts, 
+        deleteProduct
+    } = useContext(ProductContext)
 
     const createProductHandler = () => {
         history.push('/admin/products/form')
@@ -27,9 +39,10 @@ const ProductList = ({ history, match }) => {
             history.push('/signin')
         }
         else {
-            fetchProducts()   
+            // keyword, page, limit
+            fetchProducts('', page, limit)   
         }
-    }, [user, deleteSuccess, history])
+    }, [user, page, limit, deleteSuccess, history])
 
     return (
         <>
@@ -45,6 +58,7 @@ const ProductList = ({ history, match }) => {
             </Row>
             {error && <Message type='danger'>{error}</Message>}
             {loading ? <Loader/> : (
+            <>
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
                         <tr>
@@ -88,6 +102,9 @@ const ProductList = ({ history, match }) => {
                         ))}
                     </tbody>
                 </Table>
+                {/* Pagination */}
+                <Paginate pageObj={pageObj} isAdmin={true} />
+            </>
             ) }
         </>
     )
