@@ -27,6 +27,9 @@ yarn-error.log*
 /uploads/*
 !/uploads/file.txt
 
+/frontend/public/uploads/*
+!/frontend/public/uploads/file.txt
+
 .vscode/
 
 /notes/
