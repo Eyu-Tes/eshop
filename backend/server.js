@@ -22,10 +22,6 @@ process.env.NODE_ENV === 'development' && app.use(morgan('dev'))
 // body parser middleware (required inorder to accept json data in request body)
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.send('API is running ...')
-})
-
 // load routers
 app.use('/api/users', require('./routes/users'))
 app.use('/api/products', require('./routes/products'))
@@ -34,6 +30,20 @@ app.use('/api/upload', require('./routes/uploads'))
 
 // paypal config route
 app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static(path.resolve('frontend', 'build')))
+    // Create route (That is why we are doing this below all other route definitions)
+    // load '/frontend/build/index.html'
+    app.get('*', (req, res) => res.sendFile(path.resolve('frontend', 'build', 'index.html')))
+}
+else {
+    app.get('/', (req, res) => {
+        res.send('API is running ...')
+    })
+}
 
 // Make 'uploads/' folder static, so it can get loaded in the browser
 const dir = path.resolve()
