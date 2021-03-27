@@ -23,6 +23,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Files in uploads folder except file.txt
+/uploads/*
+!/uploads/file.txt
+
 .vscode/
 
 /notes/
