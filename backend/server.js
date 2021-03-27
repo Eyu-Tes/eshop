@@ -34,8 +34,7 @@ app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_I
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
-    // app.use(express.static(path.resolve('frontend', 'build')))
-    app.use('*', express.static(path.resolve('frontend', 'build')))
+    app.use(express.static(path.resolve('frontend', 'build')))
     // Create route (That is why we are doing this below all other route definitions)
     // load '/frontend/build/index.html'
     app.get('*', (req, res) => res.sendFile(path.resolve('frontend', 'build', 'index.html')))
