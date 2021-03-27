@@ -6,7 +6,8 @@ const {
     deleteProduct, 
     createProduct, 
     updateProduct, 
-    createReview
+    createReview, 
+    getTopProducts
 } = require('../controllers/products')
 
 const { protectRoute, isAdmin } = require('../middleware/authMiddleware')
@@ -24,6 +25,13 @@ router.route('/')
 // @method  POST
 // @desc    Create product
 .post(protectRoute, isAdmin, createProduct)
+
+/* Put this above '/:id' route, otherwise the router will think '/top' is a value for id */ 
+// @route   /api/products/top
+// @access  Pubilc
+// @method  GET
+// @desc    Get top rated products
+router.get('/top', getTopProducts)
 
 // @route   /api/products/:id
 router.route('/:id')

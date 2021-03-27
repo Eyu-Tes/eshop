@@ -9,6 +9,7 @@ const ProductContextProvider = (props) => {
 
     const [products, setProducts] = useState([])
     const [product, setProduct] = useState(null)
+    const [topProducts, setTopProducts] = useState([])
     const [pageObj, setPageObj] = useState('')
     const [formSuccess, setFormSuccess] = useState(false)
     const [deleteSuccess, setDeleteSuccess] = useState(false)
@@ -135,6 +136,20 @@ const ProductContextProvider = (props) => {
         }
     }
 
+    // get top rated products
+    const getTopProducts = async () => {
+        setLoading(true)
+        try {
+            const {data} = await axios.get('/api/products/top')
+            setTopProducts(data)
+            setLoading(false)
+        } catch (err) {
+            console.log(err)
+            setError(err.response.data.message)
+            setLoading(false)
+        }
+    }
+
     // reset states
     const reset = () => {
         setProduct(null)
@@ -147,6 +162,7 @@ const ProductContextProvider = (props) => {
             value={{
                 products, 
                 product,
+                topProducts, 
                 pageObj,
                 error,
                 reviewError, 
@@ -159,6 +175,7 @@ const ProductContextProvider = (props) => {
                 createProduct, 
                 updateProduct, 
                 createProductReview,
+                getTopProducts,
                 reset
             }}
         >

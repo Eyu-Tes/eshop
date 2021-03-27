@@ -5,6 +5,7 @@ import Loader from '../layout/Loader'
 import Message from '../layout/Message'
 import Paginate from '../layout/Paginate'
 import Product from '../products/Product'
+import ProductCarousel from '../products/ProductCarousel'
 import { ProductContext } from '../../context/product/ProductContext'
 
 const Home = ({ match, location }) => {
@@ -20,6 +21,7 @@ const Home = ({ match, location }) => {
 
     return (
         <>
+            { !keyword &&  <ProductCarousel /> }
             <h1>Latest Products</h1>
             {
                 loading ? <Loader /> :
