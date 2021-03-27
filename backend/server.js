@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use('*', express.static(path.resolve('frontend', 'build')))
     // Create route (That is why we are doing this below all other route definitions)
     // load '/frontend/build/index.html'
-    // app.get('*', (req, res) => res.sendFile(path.resolve('frontend', 'build', 'index.html')))
+    app.get('*', (req, res) => res.sendFile(path.resolve('frontend', 'build', 'index.html')))
 }
 else {
     app.get('/', (req, res) => {
