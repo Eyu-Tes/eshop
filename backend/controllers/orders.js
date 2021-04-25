@@ -3,13 +3,13 @@ const Order = require('../models/Order')
 
 // create order
 module.exports.createOrder = asyncHandler(async (req, res) => {
-    const { 
-        orderItems, 
-        shippingInfo, 
-        paymentMethod, 
-        itemsPrice, 
-        taxPrice, 
-        shippingPrice, 
+    const {
+        orderItems,
+        shippingInfo,
+        paymentMethod,
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
         totalPrice
     } = req.body
 
@@ -20,12 +20,12 @@ module.exports.createOrder = asyncHandler(async (req, res) => {
     else {
         const order = new Order({
             user: req.user.id,
-            orderItems, 
-            shippingInfo, 
-            paymentMethod, 
-            itemsPrice, 
-            taxPrice, 
-            shippingPrice, 
+            orderItems,
+            shippingInfo,
+            paymentMethod,
+            itemsPrice,
+            taxPrice,
+            shippingPrice,
             totalPrice
         })
 
@@ -49,7 +49,7 @@ module.exports.fetchOrderById = asyncHandler(async (req, res) => {
 
 // get orders from logged in user
 module.exports.getUserOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find({user: req.user.id})
+    const orders = await Order.find({ user: req.user.id })
     res.json(orders)
 })
 
@@ -66,9 +66,9 @@ module.exports.updateOrderToPaid = asyncHandler(async (req, res) => {
         order.isPaid = true
         order.paidAt = Date.now()
         order.paymentResult = {
-            id: req.body.id, 
-            status: req.body.status, 
-            update_time: req.body.update_time, 
+            id: req.body.id,
+            status: req.body.status,
+            update_time: req.body.update_time,
             email_address: req.body.payer.email_address
         }
         const updatedOrder = await order.save()

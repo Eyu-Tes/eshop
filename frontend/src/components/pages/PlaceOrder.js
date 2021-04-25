@@ -6,6 +6,8 @@ import CheckoutSteps from '../layout/CheckoutSteps'
 import { CartContext } from '../../context/cart/CartContext'
 import { OrderContext } from '../../context/order/OrderContext'
 
+const defaultImg = 'https://res.cloudinary.com/dvmucrzt2/image/upload/v1619034866/default.png'
+
 const PlaceOrder = ({ history }) => {
     const { cartItems, shippingInfo, paymentMethod } = useContext(CartContext)
     const { order, orderSuccess, error, createOrder } = useContext(OrderContext)
@@ -21,12 +23,12 @@ const PlaceOrder = ({ history }) => {
     const placeOrderHandler = e => {
         e.preventDefault()
         createOrder({
-            orderItems: cartItems, 
-            shippingInfo, 
-            paymentMethod, 
-            itemsPrice: Number(itemsPrice), 
-            shippingPrice: Number(shippingPrice), 
-            taxPrice: Number(taxPrice), 
+            orderItems: cartItems,
+            shippingInfo,
+            paymentMethod,
+            itemsPrice: Number(itemsPrice),
+            shippingPrice: Number(shippingPrice),
+            taxPrice: Number(taxPrice),
             totalPrice: Number(totalPrice)
         })
     }
@@ -34,7 +36,7 @@ const PlaceOrder = ({ history }) => {
     useEffect(() => {
         if (order && orderSuccess) {
             history.push(`/order/${order._id}`)
-        } 
+        }
     }, [orderSuccess])
 
     return (
@@ -50,7 +52,7 @@ const PlaceOrder = ({ history }) => {
                                 {shippingInfo.address}, {' '}
                                 {shippingInfo.city}, {' '}
                                 {shippingInfo.postalCode}, {' '}
-                                {shippingInfo.country} 
+                                {shippingInfo.country}
                             </p>
                         </ListGroup.Item>
                         <ListGroup.Item>
@@ -66,26 +68,26 @@ const PlaceOrder = ({ history }) => {
                                 <Message>Your cart is empty</Message>
                             ) : (
                                 <ListGroup variant='flush'>
-                                    {cartItems.map((cartItem, index) => 
-                                    <ListGroup.Item key={index}>
-                                        <Row>
-                                            <Col md={2}>
-                                                <Image 
-                                                    src={cartItem.image} 
-                                                    alt={cartItem.name} 
-                                                    fluid rounded
-                                                />
-                                            </Col>
-                                            <Col>
-                                                <Link to={`/product/${cartItem.product}`}>
-                                                    {cartItem.name}
-                                                </Link>
-                                            </Col>
-                                            <Col md={4}>
-                                                {cartItem.qty} x ${cartItem.price} = ${cartItem.qty * cartItem.price}
-                                            </Col>
-                                        </Row>
-                                    </ListGroup.Item>)}
+                                    {cartItems.map((cartItem, index) =>
+                                        <ListGroup.Item key={index}>
+                                            <Row>
+                                                <Col md={2}>
+                                                    <Image
+                                                        src={cartItem.image || defaultImg}
+                                                        alt={cartItem.name}
+                                                        fluid rounded
+                                                    />
+                                                </Col>
+                                                <Col>
+                                                    <Link to={`/product/${cartItem.product}`}>
+                                                        {cartItem.name}
+                                                    </Link>
+                                                </Col>
+                                                <Col md={4}>
+                                                    {cartItem.qty} x ${cartItem.price} = ${cartItem.qty * cartItem.price}
+                                                </Col>
+                                            </Row>
+                                        </ListGroup.Item>)}
                                 </ListGroup>
                             )}
                         </ListGroup.Item>
@@ -121,14 +123,14 @@ const PlaceOrder = ({ history }) => {
                                     <Col>${totalPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
-                            { error && 
+                            {error &&
                                 <ListGroup.Item>
-                                    <Message type='danger'>{error}</Message> 
+                                    <Message type='danger'>{error}</Message>
                                 </ListGroup.Item>
                             }
                             <ListGroup.Item>
-                                <Button 
-                                    type='button' 
+                                <Button
+                                    type='button'
                                     className='btn-block'
                                     disabled={cartItems.legth === 0}
                                     onClick={placeOrderHandler}

@@ -1,12 +1,25 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import Rating from './Rating'
 
-const Product = ({ product: {_id, image, name, rating, numReviews, price} }) => {
+const defaultImg = 'https://res.cloudinary.com/dvmucrzt2/image/upload/v1619034866/default.png'
+
+const Product = ({ product: { _id, image, name, rating, numReviews, price } }) => {
+    const [img, setImg] = useState(image)
+
+    const onError = () => {
+        setImg(defaultImg)
+    }
+
     return (
         <Card className='my-3 p-3 rounded'>
             <Link to={`/product/${_id}`}>
-                <Card.Img src={image} variant='top' />
+                <Card.Img
+                    src={img}
+                    variant='top'
+                    onError={onError}
+                />
             </Link>
             <Card.Body>
                 <Link to={`/product/${_id}`}>
@@ -15,8 +28,8 @@ const Product = ({ product: {_id, image, name, rating, numReviews, price} }) => 
                     </Card.Title>
                 </Link>
                 <Card.Text as="div">
-                    <Rating 
-                        value={rating} 
+                    <Rating
+                        value={rating}
                         text={`${numReviews} reviews`}
                     />
                 </Card.Text>
